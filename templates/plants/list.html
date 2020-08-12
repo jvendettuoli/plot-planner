@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Search Plants</h1>
+<form method="" id="plant-form">
+{% include 'base-form.html' %}
+<button class="btn btn-success btn-lg btn-block">Get Plants!</button>
+</form>
+
+
+<table id="plant-table" class="table my-3 table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Common Name</th>
+            <th scope="col">Scientific Name</th>
+            <th scope="col">Family</th>
+            <th scope="col">Image</th>
+        </tr>
+    </thead>
+    <tbody id="plant-table-body">
+
+{% for plant in plant_list %}
+    <tr>
+
+
+        <td>{{plant['common_name']}}</td>
+        <td><a href="/plants/{{plant['slug']}}">{{plant['scientific_name']}}</a></td>
+        <td>{{plant['family_common_name']}}</td>
+        <td><img width="100" height="100" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image"></td>
+
+
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+<div class="d-flex justify-content-between">
+<div class="container">
+    <p><</p>
+    <i class="far fa-arrow-alt-circle-left"></i>
+</div>
+<div class="container">
+    <p class="text-right">></p>
+    <i class="far fa-arrow-alt-circle-right"></i>
+</div>
+</div>
+{% endblock %}
+{% block code %}
+<script src="/static/app.js"></script>
+{% endblock %}

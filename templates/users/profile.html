@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>User Profile</h1>
+<div class="container">
+    <img src="{{user.image_url}}" alt="user profile image">
+    
+    <p class="text">ID: {{user.id}}</p>
+    <p class="text">Username: {{user.username}}</p>
+    <p class="text">Projects: </p>
+    <ul>
+    {% for project in user.projects %}
+    <li>{{project.name}}</li>
+    {% endfor %}
+    </ul>
+    
+    <p class="text">Lists: </p>
+    <ul>
+    {% for plant_list in user.plant_lists %}
+    <li>{{plant_list.name}}</li>
+    {% endfor %}
+    </ul>
+
+    <p class="text">Plots: </p>
+    <ul>
+    {% for plot in user.plots %}
+    <li>{{plot.name}}</li>
+    {% endfor %}
+    </ul>
+
+</div>
+
+
+ 
+{% endblock %}
+{% block code %}
+{% endblock %}

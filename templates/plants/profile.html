@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Plant Profile</h1>
+<div class="container">
+    <img src="{% if main_species['image_url'] == None %}/static/images/default-pic.png{% else %}{{main_species['image_url']}}{% endif %}" alt="{{main_species['common_name']}} image">
+{% for field in main_species %}
+    
+<p class="text">{{field}}: {{main_species[field]}}</p>
+{% endfor %}
+
+
+
+</div>
+
+
+
+{% endblock %}
+{% block code %}
+<script src="/static/app.js"></script>
+{% endblock %}

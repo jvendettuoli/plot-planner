@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    
+    <title>Plot Planner</title>
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+  <a class="navbar-brand" href="#">Plot Planner</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/login">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/signup">Signup</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/plants">Plant List</a>
+          <a class="dropdown-item" href="/projects">Projects</a>
+          <a class="dropdown-item" href="/plots">Plots</a>
+          <a class="dropdown-item" href="/plant_lists">Plant Lists</a>
+          <a class="dropdown-item" href="/users/{{g.user.id}}">User</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+<!-- <nav class="navbar navbar-expand">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="navbar-brand">
+        <img src="/static/images/default-pic.png" alt="logo">
+        <span>Plot Planner</span>
+      </a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      {% if request.endpoint != None %}
+      <li>
+        <form class="navbar-form navbar-right" action="/users">
+          <input name="q" class="form-control" placeholder="Search Warbler" id="search">
+          <button class="btn btn-default">
+            <span class="fa fa-search"></span>
+          </button>
+        </form>
+      </li>
+      {% endif %}
+      {% if not g.user %}
+      <li><a href="/signup">Sign up</a></li>
+      <li><a href="/login">Log in</a></li>
+      {% else %}
+      <li>
+        <a href="/users/{{ g.user.id }}">
+          <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
+        </a>
+      </li>
+      <li><a href="/messages/new">New Message</a></li>
+      <li><a href="/logout">Log out</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav> -->
+<div class="container">
+  {% for category, message in get_flashed_messages(with_categories=True) %}
+  <div class="alert alert-{{ category }}">{{ message }}</div>
+  {% endfor %}
+
+  {% block content %}
+  {% endblock %}
+
+</div>
+
+
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
+{% block code %}
+{% endblock %}
+</html>
