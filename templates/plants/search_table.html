@@ -1,6 +1,14 @@
+{% from 'macros.html' import img_modal %}
 {% extends 'base.html' %}
 {% block content %}
-<h1>Search Plants</h1>
+<div class="jumbotron jumbotron-fluid text-white" id="search-jumbo">
+    <div class="container text-backdrop-dark" >
+      <h1 class="display-4">Search Plants</h1>
+      <p class="lead">Search by common name, species, or family and see what results you get, or use filters to narrow down the one million plants available through the the <a class="text-success" href="https://trefle.io/">trefle.io</a> API. Click the scientific name to see more details about the plant and add it to your Plant Lists!</p>
+    </div>
+</div>
+<div class="container">
+
 <form method="" id="plant-form">
 {% include 'base-form.html' %}
 <button class="btn btn-success btn-lg btn-block">Get Plants!</button>
@@ -25,7 +33,14 @@
         <td>{{plant['common_name']}}</td>
         <td><a href="/plants/{{plant['slug']}}">{{plant['scientific_name']}}</a></td>
         <td>{{plant['family_common_name']}}</td>
-        <td><img width="100" height="100" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image"></td>
+        <td>
+        <!-- Thumbnail triggers img_modal -->
+        <a type="button" data-toggle="modal" data-target="#{{plant['slug']}}-modal">
+            <img id="table-plant-img" class="img-thumbnail" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
+        </a>
+        </td>
+        {{img_modal(plant)}}
+
 
 
     </tr>
@@ -42,7 +57,11 @@
     <i class="far fa-arrow-alt-circle-right"></i>
 </div>
 </div>
+
+
+
+
 {% endblock %}
 {% block code %}
-<script src="/static/app.js"></script>
+<script src="/static/plantSearch.js"></script>
 {% endblock %}

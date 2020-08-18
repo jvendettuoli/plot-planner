@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="jumbotron jumbotron-fluid text-white" id="plantlist-jumbo">
+    <div class="container text-backdrop-dark">
+      <h1 class="display-4">Plant Lists</h1>
+      <p class="lead">Plant lists allow you to save specific plants to a list to organize and keep track of different species. Any plant that can be found while searching plants can be added to a list. Lists can then be added to existing or future projects and plots.</p>
+    </div>
+</div>
+
+<div class="container">
+    <h4>Add a new plant list.</h4>
+    <p>After the list is created you can add plants to it by searching <a href="{{url_for('plants_search_table')}}">searching plants</a>.</p>
+
+    <form method="POST">
+    {% include 'base-form.html' %}
+    <button class="btn btn-primary">Create Plant List</button>
+    </form>
+</div>
+{% endblock %}
+{% block code %}
+{% endblock %}

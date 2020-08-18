@@ -6,6 +6,7 @@ from wtforms import (
     TextAreaField,
     SelectMultipleField,
     BooleanField,
+    FormField,
 )
 from wtforms.validators import (
     DataRequired,
@@ -64,6 +65,18 @@ class PlantSearchForm(FlaskForm):
     nitrogen_fixation = BooleanField("Nitrogen fixing?", validators=[Optional()])
 
 
+class AddPlotForm(FlaskForm):
+    """Subform for adding new plots."""
+
+    plots = SelectMultipleField("Connect an existing plot:", coerce=int)
+
+
+class AddProjectForm(FlaskForm):
+    """Subform for adding new projects."""
+
+    projects = SelectMultipleField("Connect an existing project:", coerce=int)
+
+
 class ProjectAddForm(FlaskForm):
     """Form for adding new project."""
 
@@ -71,6 +84,10 @@ class ProjectAddForm(FlaskForm):
         "Project Name", validators=[DataRequired(message="Project name required.")]
     )
     description = TextAreaField("Description", validators=[Optional()])
+    plots = SelectMultipleField("Connect to your your existing plots:", coerce=int)
+    plant_lists = SelectMultipleField(
+        "Connect to your your existing plant lists:", coerce=int
+    )
     is_public = BooleanField(
         "Would you like this project to be available for other users to copy?",
         validators=[Optional()],
@@ -86,6 +103,9 @@ class PlantListAddForm(FlaskForm):
         validators=[DataRequired(message="Plant List name required.")],
     )
     description = TextAreaField("Description", validators=[Optional()])
+    projects = SelectMultipleField("Connect to existing project:", coerce=int)
+    plots = SelectMultipleField("Connect to your existing plots:", coerce=int)
+
     is_public = BooleanField(
         "Would you like this list to be available for other users to copy?",
         validators=[Optional()],
@@ -118,6 +138,7 @@ class PlotAddForm(FlaskForm):
             NumberRange(min=1, message="Width cannot be less than 1 foot."),
         ],
     )
+    projects = SelectMultipleField("Add to existing project:", coerce=int)
     is_public = BooleanField(
         "Would you like this list to be available for other users to copy?",
         validators=[Optional()],

@@ -5,8 +5,9 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/37f4ac9872.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static', filename='stylesheets/style.css')}}">
     
     <title>Plot Planner</title>
 </head>
@@ -14,90 +15,78 @@
 <body class="{% block body_class %}{% endblock %}">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-  <a class="navbar-brand" href="#">Plot Planner</a>
+  <a class="navbar-brand" href="{{url_for('homepage')}}"><i class="fas fa-seedling mr-2"></i>Plot Planner</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+ 
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('plants_search_table')}}">Search Plants</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/login">Login</a>
+        <a class="nav-link" href="{{url_for('add_projects')}}">Projects</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/signup">Signup</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/plants">Plant List</a>
-          <a class="dropdown-item" href="/projects">Projects</a>
-          <a class="dropdown-item" href="/plots">Plots</a>
-          <a class="dropdown-item" href="/plant_lists">Plant Lists</a>
-          <a class="dropdown-item" href="/users/{{g.user.id}}">User</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
+        <a class="nav-link" href="{{url_for('add_plant_lists')}}">Plant Lists</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+        <a class="nav-link" href="{{url_for('add_plots')}}">Plots</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">About Us</a>
+      </li>
+
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    <ul class="navbar-nav justify-content-end">
+
+    {% if not g.user %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('login')}}">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('signup')}}">Signup</a>
+      </li>
+  
+    {% else %}
+   
+      <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{g.user.username}}'s Garden Shed
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{{url_for('user_profile',user_id=g.user.id)}}">Profile</a>
+              <div class="dropdown-divider"></div>
+              <!--{# <a class="dropdown-item" href="{{url_for('show_projects',user_id=g.user.id)}}">My Projects</a>
+              <a class="dropdown-item" href="/plots">My Plots</a>
+              <a class="dropdown-item" href="/plant_lists">My Plant Lists
+              </a> #} -->
+              <a class="dropdown-item" href="{{url_for('user_content', user_id=g.user.id)}}">My Content</a> 
+             
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{url_for('logout')}}">Logout</a>
+          </div>
+      </li>
+    {% endif %}
+    </ul>    
   </div>
 </nav>
 
-<!-- <nav class="navbar navbar-expand">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a href="/" class="navbar-brand">
-        <img src="/static/images/default-pic.png" alt="logo">
-        <span>Plot Planner</span>
-      </a>
-    </div>
-    <ul class="nav navbar-nav navbar-right">
-      {% if request.endpoint != None %}
-      <li>
-        <form class="navbar-form navbar-right" action="/users">
-          <input name="q" class="form-control" placeholder="Search Warbler" id="search">
-          <button class="btn btn-default">
-            <span class="fa fa-search"></span>
-          </button>
-        </form>
-      </li>
-      {% endif %}
-      {% if not g.user %}
-      <li><a href="/signup">Sign up</a></li>
-      <li><a href="/login">Log in</a></li>
-      {% else %}
-      <li>
-        <a href="/users/{{ g.user.id }}">
-          <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
-        </a>
-      </li>
-      <li><a href="/messages/new">New Message</a></li>
-      <li><a href="/logout">Log out</a></li>
-      {% endif %}
-    </ul>
-  </div>
-</nav> -->
+
 <div class="container">
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="alert alert-{{ category }}">{{ message }}</div>
   {% endfor %}
-
+</div>
   {% block content %}
   {% endblock %}
 
-</div>
+<footer>
+  <hr>
+  <p class="text-center text-success">Plant data obtained from <a href="https://trefle.io/">trefle.io</a>, an open source global plants API.</p>
+</footer>
 
 
 </body>

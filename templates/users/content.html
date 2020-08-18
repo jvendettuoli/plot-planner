@@ -1,0 +1,131 @@
+{% from 'macros.html' import macro_form %}
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="jumbotron jumbotron-fluid text-white" id="content-jumbo">
+    <div class="container text-backdrop-dark">
+      <h1 class="display-4">My Content</h1>
+      <p class="lead">The central hub for all Projects, Plots, and Plant Lists you have saved to your profile. View how everything is connected, add and remove connections, and checkout specific parts.</p>
+    </div>
+    
+</div>
+
+<div class="container content-projects">
+  <h2 class="text-center">Projects</h2>
+  <div class="list-group list-group-flush">
+    {% for project in user.projects %}
+
+        <div class="list-group-item">
+        <div class="row">
+            <div class="col-12 col-lg-5 col-sm-12">
+                <h4><a href="{{url_for('show_project', project_id=project.id)}}">{{project.name}}</a></h4>
+                <p>{{project.description}}</p>
+            </div>
+            <div class="col-12 col-lg col-sm-6 border-left">
+                <h5>Connected Plots <small class="align-top" style="cursor: pointer;"><span class="badge badge-info" data-toggle="modal" data-target="#addPlotModal-{{project.id}}">Add</span></small></h5>
+                    <ul id="plot-list-{{project.id}}">
+                    {% for plot in project.plots %}
+                        <li data-plot-id={{plot.id}} data-project-id={{project.id}}><a href="{{url_for('show_plot', plot_id=plot.id)}}">{{plot.name}}</a><button class="btn btn-sm text-danger proj-rmv-plot-btn"> <i class="fas fa-times"></i></button></li>
+                    {% else %}
+                        <li><p>No Plots connected yet.</p></li>
+                    {% endfor %}
+                    </ul>
+            </div>   
+            <div class="col-12 col-lg col-sm-6 border-left">
+                <h5>Connected Plant Lists <small class="align-top" style="cursor: pointer;"><span class="badge badge-info">Add</span></small></h5>
+                    <ul>
+                    {% for plantlist in project.plantlists %}
+                        <li data-plantlist-id={{plantlist.id}} data-project-id={{project.id}}><a href="{{url_for('show_plant_list', plant_list_id=plantlist.id)}}">{{plantlist.name}}</a><button class="btn btn-sm text-danger proj-rmv-plntlst-btn"> <i class="fas fa-times"></i></button></li>
+                    {% else %}
+                        <li><p>No Plant Lists connected yet.</p></li>
+                    {% endfor %}
+                    </ul>
+            </div>
+        </div>
+    </div>
+
+
+  <!--Add Plots Modal -->
+  
+  <div class="modal fade" id="addPlotModal-{{project.id}}" tabindex="-1" role="dialog" aria-labelledby="addPlotModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPlotModalLabel">Add Plots</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" data-project-id="{{project.id}}">
+          
+            <form id="add-plots-form">
+                {{ form_plot.hidden_tag() }}
+
+
+                {% for field in form_plot if field.widget.input_type != 'hidden' %}
+                {{field.id}}
+                <!-- {{field.label}} -->
+                {{field.name}}
+                {{field.description}}
+                {{field.gettext}}
+                {{field.iter_choices()}}
+                  <div class="form-group">
+                   <b>{{field.label}}</b>
+                    {{field(class_="form-control")}}
+                    {% for err in field.errors %}
+                    <small class="form-text text-danger">
+                        {{err}}
+                    </small>
+                  {% endfor %}
+                </div>
+                {% endfor %}
+                
+
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+            </form>
+
+      </div>
+    </div>
+  </div>
+
+
+    {% endfor %}
+    </div>
+</div>
+
+<div class="container-fluid content-divider">
+
+</div>
+
+
+  <p class="text">Lists: </p>
+  <ul>
+  {% for plantlist in user.plantlists %}
+  <li><a href="{{url_for('show_plant_list', plant_list_id=plantlist.id)}}">{{plantlist.name}}</a></li>
+  {% endfor %}
+  </ul>
+
+
+<div class="container-fluid content-divider">
+
+</div>
+
+  <p class="text">Plots: </p>
+  <ul>
+  {% for plot in user.plots %}
+  <li>{{plot.name}}</li>
+  {% endfor %}
+  </ul>
+</div>
+
+
+
+
+
+{% endblock %}
+{% block code %}
+<script src="/static/changeConnection.js"></script>
+<script src="/static/subform.js"></script>
+{% endblock %}

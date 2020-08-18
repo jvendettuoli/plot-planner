@@ -1,0 +1,41 @@
+{% macro img_modal(plant) %}
+  <!-- Modal -->
+  <div class="modal fade" id="{{plant['slug']}}-modal" tabindex="-1" aria-labelledby="{{plant['slug']}}-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <img id= class="img-thumbnail" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro add_connection_modal(plant) %}
+  <!-- Modal -->
+  <div class="modal fade" id="{{plant['slug']}}-modal" tabindex="-1" aria-labelledby="{{plant['slug']}}-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <img id= class="img-thumbnail" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+<!-- Macro for forms, when multiple forms need per page and base-form cannot work -->
+{% macro macro_form(form) %}
+    {{ form.hidden_tag() }}
+
+    {% for field in form if field.widget.input_type != 'hidden' %}
+    <div class="form-group">
+        <b>{{field.label}}</b>
+        {{field(class_="form-control")}}
+        {% for err in field.errors %}
+        <small class="form-text text-danger">
+            {{err}}
+        </small>
+    {% endfor %}
+    </div>
+    {% endfor %}
+    
+{% endmacro %}

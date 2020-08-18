@@ -1,0 +1,88 @@
+{% from 'macros.html' import macro_form %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="jumbotron jumbotron-fluid text-white" id="plantlist-show-jumbo">
+    <div class="container text-backdrop-dark">
+        <div class="row pr-4 ">
+            <div class="col">
+
+                <h1 class="display-4">{{plant_list.name}}</h1>
+                <p class="lead">{{plant_list.description}}</p>
+            </div>
+            <div class="col-2 align-self-center">
+                <div class="row justify-content-end">
+                        <form method="GET" action="{{url_for('edit_plant_list' ,plant_list_id=plant_list.id)}}"><button type="submit" class="btn btn-info mb-3">Edit</button></form>
+                </div>
+                <div class="row justify-content-end">
+                        <form method="POST" action="{{url_for('delete_plant_list' ,plant_list_id=plant_list.id)}}"><button type="submit" class="btn btn-danger">Delete</button></form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-12 border-right">
+            <h5>Connected Projects</h5>
+                <ul id="project-list">
+                {% for project in plant_list.projects %}
+                    <li data-plantlist-id={{plant_list.id}} data-project-id={{project.id}}><a href="{{url_for('show_project', project_id=project.id)}}">{{project.name}}</a><button class="btn btn-sm text-danger proj-rmv-plntlst-btn"> <i class="fas fa-times"></i></button></li>
+                {% else %}
+                    <li><p>No projects connected yet.</p></li>
+                {% endfor %}
+                </ul>
+            
+
+        </div>   
+        <div class="col-md-6 col-12">
+            <h5>Connected Plots</h5>
+                <ul id="plot-list">
+                {% for plot in plant_list.plots %}
+                    <li data-plot-id={{plot.id}} data-plantlist-id={{plant_list.id}}><a href="{{url_for('show_plot', plot_id=plot.id)}}">{{plot.name}}</a><button class="btn btn-sm text-danger plot-rmv-plntlst-btn"> <i class="fas fa-times"></i></button></li>
+                {% else %}
+                    <li><p>No plots connected yet.</p></li>
+                {% endfor %}
+                </ul>
+               
+        </div>   
+    </div>
+    <div class="row align-items-bottom">
+        <div class="col-6 ">
+        <button id="toggle-projects-btn" type="button" data-toggle="modal" data-target="#project-modal" class="btn btn-block btn-outline-info ">Show/Hide Your Other Projects <i class="fas fa-caret-down"></i></button>
+    </div>
+    <div class="col-6">
+        <button id="toggle-plots-btn" type="button" data-toggle="modal" data-target="#plot-modal" class="btn btn-block btn-outline-info">Show/Hide Your Other Plots <i class="fas fa-caret-down"></i></button>
+    </div>
+    </div>
+</div>
+
+<div class="container" data-plantlist-id="{{plant_list.id}}">
+    <form class="mt-4" id="add-plots-form" style="display: none;">
+        {{macro_form(form_plot)}}
+        <button class="btn btn-block btn-info">Add Selected Plots to Plant List</button>
+    </form>
+    <form class="mt-4" id="add-projects-form" style="display: none;">
+        {{macro_form(form_project)}}
+        <div class="row">
+
+            <div class="col">
+                <button  class="btn btn-block btn-info">Add Selected Projects to Plant List</button>
+            </div>
+        </div>
+    </form>
+</div>
+<hr>
+
+<div class="container">
+<h2>Plants</h2>
+
+</div>
+
+
+{% endblock %}
+{% block code %}
+<script src="/static/changeConnection.js"></script>
+<script src="/static/subform.js"></script>
+{% endblock %}

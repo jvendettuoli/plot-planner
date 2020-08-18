@@ -133,6 +133,14 @@ class PlantList(db.Model):
 
         return plant_list
 
+    def edit(self, name, description, is_public):
+        """Edit user's profile information"""
+        self.name = name or self.name
+        self.description = description or self.description
+        self.is_public = is_public or self.is_public
+        db.session.add(self)
+        db.session.commit()
+
 
 class Plot(db.Model):
     """Plot Model - handles plots for users."""
@@ -145,6 +153,10 @@ class Plot(db.Model):
     width = db.Column(db.Integer, nullable=False)
     length = db.Column(db.Integer, nullable=False)
     is_public = db.Column(db.Boolean)
+
+    plantlists = db.relationship(
+        "PlantList", secondary="plots_plantlists", backref="plots"
+    )
 
     @classmethod
     def add(

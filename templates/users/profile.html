@@ -1,33 +1,64 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>User Profile</h1>
 <div class="container">
-    <img src="{{user.image_url}}" alt="user profile image">
-    
-    <p class="text">ID: {{user.id}}</p>
-    <p class="text">Username: {{user.username}}</p>
-    <p class="text">Projects: </p>
-    <ul>
-    {% for project in user.projects %}
-    <li>{{project.name}}</li>
-    {% endfor %}
-    </ul>
-    
-    <p class="text">Lists: </p>
-    <ul>
-    {% for plant_list in user.plant_lists %}
-    <li>{{plant_list.name}}</li>
-    {% endfor %}
-    </ul>
+<h1>User Profile</h1>
+    <div class="row">
+        <div class="col-2">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link" href="#">My Projects</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">My Plots</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">My Plant Lists</a>
+                </li>
+         
+            </ul>
+        </div>
+        <div class="col">
+            <img src="{{user.image_url}}" alt="user profile image" width="200">
+            
+            <!-- <p class="text">ID: {{user.id}}</p> -->
+            <p class="text">Welcome, {{user.username}}!</p>
+            <a class="btn btn-primary" href="{{url_for('edit_user')}}">Edit Profile</a>
+            <!-- <a class="btn btn-danger" href="{{url_for('delete_user')}}">Delete Profile</a> -->
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-modal">
+                Delete User
+              </button>
 
-    <p class="text">Plots: </p>
-    <ul>
-    {% for plot in user.plots %}
-    <li>{{plot.name}}</li>
-    {% endfor %}
-    </ul>
 
+            
+        </div>
+    </div>
 </div>
+
+
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="confirm-delete-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="delete-modal-label">Confirm Delete User?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete your user profile? You will lose access to any projects, plots, and plant lists you have created that are not already public.
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <form method="POST" action="{{url_for('delete_user')}}" class="form-inline">
+                <button type="submit" class="btn btn-outline-danger">Yes, Delete User</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
  

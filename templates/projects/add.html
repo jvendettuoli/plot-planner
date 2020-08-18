@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="jumbotron jumbotron-fluid text-white" id="project-jumbo">
+    <div class="container text-backdrop-dark">
+      <h1 class="display-4">Projects</h1>
+      <p class="lead">Projects are useful for organizing Plots and Plant Lists that you create into one cohesive group.</p>
+    </div>
+</div>
+
+<div class="container">
+
+<h4>Add a new project.</h4>
+<form method="POST">
+{% include 'base-form.html' %}
+<button class="btn btn-primary">Create Project</button>
+</form>
+</div>
+{% endblock %}
+{% block code %}
+{% endblock %}

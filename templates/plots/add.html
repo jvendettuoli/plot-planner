@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="jumbotron jumbotron-fluid text-white" id="plot-jumbo">
+    <div class="container text-backdrop-dark" >
+      <h1 class="display-4">Plots</h1>
+      <p class="lead">Plots are simplified planting beds that allow you to plot out which plant species you will plant within a grid system, by using plants from an existing Plant List.</p>
+    </div>
+</div>
+
+<div class="container">
+    <h4>Add a new plot.</h4>
+
+    <form method="POST">
+    {% include 'base-form.html' %}
+    <button class="btn btn-primary">Create Plot</button>
+    </form>
+</div>
+{% endblock %}
+{% block code %}
+{% endblock %}
