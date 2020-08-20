@@ -127,11 +127,11 @@ class PlantList(db.Model):
     def add(cls, name, description="No plant list description.", is_public=False):
         """Adds new plant list for user."""
 
-        plant_list = PlantList(name=name, description=description, is_public=is_public)
+        plantlist = PlantList(name=name, description=description, is_public=is_public)
 
-        db.session.add(plant_list)
+        db.session.add(plantlist)
 
-        return plant_list
+        return plantlist
 
     def edit(self, name, description, is_public):
         """Edit user's profile information"""
@@ -194,7 +194,7 @@ class Users_PlantLists(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    plant_list_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
+    plantlist_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
 
 
 class Users_Plots(db.Model):
@@ -214,7 +214,7 @@ class Projects_PlantLists(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"))
-    plant_list_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
+    plantlist_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
 
 
 class Projects_Plots(db.Model):
@@ -234,7 +234,7 @@ class Plots_PlantLists(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     plot_id = db.Column(db.Integer, db.ForeignKey("plots.id"))
-    plant_list_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
+    plantlist_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
 
 
 class PlantLists_Plants(db.Model):
@@ -243,7 +243,7 @@ class PlantLists_Plants(db.Model):
     __tablename__ = "plantlists_plants"
 
     id = db.Column(db.Integer, primary_key=True)
-    plant_list_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
+    plantlist_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
     plant_id = db.Column(db.Integer, db.ForeignKey("plants.id"))
 
 

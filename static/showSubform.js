@@ -3,6 +3,17 @@
 console.log('START subform.js');
 
 //Cache common DOM elements
+const $projRmvPlotBtn = $('.proj-rmv-plot-btn');
+const $projRmvPlntlstBtn = $('.proj-rmv-plntlst-btn');
+const $plotRmvPlntLstBtn = $('.plot-rmv-plntlst-btn');
+// const $projectsForm = $('#add-projects-form');
+// const $plotsForm = $('#add-plots-form');
+
+const dataAttrProjectId = 'data-project-id';
+const dataAttrPlotId = 'data-plot-id';
+const dataAttrPlantListId = 'data-plantlist-id';
+
+//Cache common DOM elements
 const $toggleProjectsBtn = $('#toggle-projects-btn');
 const $togglePlotsBtn = $('#toggle-plots-btn');
 const $projectsForm = $('#add-projects-form');
@@ -11,7 +22,44 @@ const $plotList = $('#plot-list');
 const $projectList = $('#project-list');
 const $modalBody = $('.modal-body');
 
-function generateLiHTML(element, plantlistId, elementId, elementName) {
+function generateOptionHTML(value, text) {
+	return `
+	<option value="${value}">${text}</option>
+	`;
+}
+
+$projRmvPlotBtn.click(function(evt) {
+	const plotId = $(evt.currentTarget).parent().attr(dataAttrPlotId);
+	const projectId = $(evt.currentTarget).parent().attr(dataAttrProjectId);
+
+	Connection.projectRemovePlot(projectId, plotId);
+	$(evt.currentTarget).parent().remove();
+});
+
+$('ul').on('click', '.proj-rmv-plntlst-btn', function(evt) {
+	const $li = $(evt.currentTarget).parent();
+	const plantlistId = $li.attr(dataAttrPlantListId);
+	const projectId = $li.attr(dataAttrProjectId);
+
+	Connection.projectRemovePlantList(projectId, plantlistId);
+	$li.remove();
+
+	$('#projects').append(generateOptionHTML(projectId, $li.text()));
+});
+
+$('ul').on('click', '.plot-rmv-plntlst-btn', function(evt) {
+	evt.preventDefault();
+	const $li = $(evt.currentTarget).parent();
+	const plantlistId = $li.attr(dataAttrPlantListId);
+	const plotId = $li.attr(dataAttrPlotId);
+
+	Connection.plotRemovePlantList(plotId, plantlistId);
+	$li.remove();
+
+	$('#plots').append(generateOptionHTML(plotId, $li.text()));
+});
+
+function generateLiHtml(element, plantlistId, elementId, elementName) {
 	let rmvClass;
 	if (element === 'project') {
 		rmvClass = 'proj-rmv-plntlst-btn';
@@ -48,7 +96,7 @@ $projectsForm.submit(function(evt) {
 			if ($projectList.text().includes('No projects connected yet.')) {
 				$projectList.empty();
 			}
-			$projectList.append(generateLiHTML('project', plantlistId, element.value, optionText));
+			$projectList.append(generateLiHtml('project', plantlistId, element.value, optionText));
 			$(`option:selected[value='${element.value}']`).remove();
 		}
 	});
@@ -75,7 +123,7 @@ $modalBody.on('submit', function(evt) {
 				$plotList.empty();
 			}
 			console.log($(`#plot-list-${projectId}`));
-			$(`#plot-list-${projectId}`).append(generateLiHTML('plot', projectId, element.value, optionText));
+			$(`#plot-list-${projectId}`).append(generateLiHtml('plot', projectId, element.value, optionText));
 			$(`option:selected[value='${element.value}']`).remove();
 		}
 	});
@@ -97,7 +145,7 @@ $plotsForm.submit(function(evt) {
 			if ($plotList.text().includes('No plots connected yet.')) {
 				$plotList.empty();
 			}
-			$plotList.append(generateLiHTML('plot', plantlistId, element.value, optionText));
+			$plotList.append(generateLiHtml('plot', plantlistId, element.value, optionText));
 			$(`option:selected[value='${element.value}']`).remove();
 		}
 	});

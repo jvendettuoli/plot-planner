@@ -65,16 +65,22 @@ class PlantSearchForm(FlaskForm):
     nitrogen_fixation = BooleanField("Nitrogen fixing?", validators=[Optional()])
 
 
+class AddProjectForm(FlaskForm):
+    """Subform for adding new projects."""
+
+    projects = SelectMultipleField("Connect an existing project:", coerce=int)
+
+
 class AddPlotForm(FlaskForm):
     """Subform for adding new plots."""
 
     plots = SelectMultipleField("Connect an existing plot:", coerce=int)
 
 
-class AddProjectForm(FlaskForm):
-    """Subform for adding new projects."""
+class AddPlantListForm(FlaskForm):
+    """Subform for adding new plantlists."""
 
-    projects = SelectMultipleField("Connect an existing project:", coerce=int)
+    plantlists = SelectMultipleField("Connect an existing plant list:", coerce=int)
 
 
 class ProjectAddForm(FlaskForm):
@@ -85,7 +91,7 @@ class ProjectAddForm(FlaskForm):
     )
     description = TextAreaField("Description", validators=[Optional()])
     plots = SelectMultipleField("Connect to your your existing plots:", coerce=int)
-    plant_lists = SelectMultipleField(
+    plantlists = SelectMultipleField(
         "Connect to your your existing plant lists:", coerce=int
     )
     is_public = BooleanField(

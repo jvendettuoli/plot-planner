@@ -1,6 +1,6 @@
 'use strict';
 
-console.log('START');
+console.log('START plantSearch.js');
 
 //Cache common DOM elements
 const $plantForm = $('#plant-form');

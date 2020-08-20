@@ -15,117 +15,295 @@
   <div class="list-group list-group-flush">
     {% for project in user.projects %}
 
-        <div class="list-group-item">
+        <div class="list-group-item" data-primary="project" data-primary-id="{{project.id}}">
         <div class="row">
             <div class="col-12 col-lg-5 col-sm-12">
                 <h4><a href="{{url_for('show_project', project_id=project.id)}}">{{project.name}}</a></h4>
                 <p>{{project.description}}</p>
             </div>
             <div class="col-12 col-lg col-sm-6 border-left">
-                <h5>Connected Plots <small class="align-top" style="cursor: pointer;"><span class="badge badge-info" data-toggle="modal" data-target="#addPlotModal-{{project.id}}">Add</span></small></h5>
-                    <ul id="plot-list-{{project.id}}">
-                    {% for plot in project.plots %}
-                        <li data-plot-id={{plot.id}} data-project-id={{project.id}}><a href="{{url_for('show_plot', plot_id=plot.id)}}">{{plot.name}}</a><button class="btn btn-sm text-danger proj-rmv-plot-btn"> <i class="fas fa-times"></i></button></li>
-                    {% else %}
-                        <li><p>No Plots connected yet.</p></li>
-                    {% endfor %}
-                    </ul>
+                <h5>Connected Plots <small class="align-top" style="cursor: pointer;"><span class="badge badge-info add-btn" data-toggle="modal" data-target="#projectAddPlotModal-{{project.id}}" data-primary="project" data-secondary="plots">Add</span></small></h5>
+                <ul class="plot-list secondary">
+                {% for plot in project.plots %}
+                    <li data-secondary-id={{plot.id}}><a href="{{url_for('show_plot', plot_id=plot.id)}}">{{plot.name}}</a><button class="btn btn-sm text-danger proj-rmv-plot-btn"> <i class="fas fa-times"></i></button></li>
+
+                {% else %}
+                    <li><p>No Plots connected yet.</p></li>
+                {% endfor %}
+                </ul>
             </div>   
             <div class="col-12 col-lg col-sm-6 border-left">
-                <h5>Connected Plant Lists <small class="align-top" style="cursor: pointer;"><span class="badge badge-info">Add</span></small></h5>
-                    <ul>
-                    {% for plantlist in project.plantlists %}
-                        <li data-plantlist-id={{plantlist.id}} data-project-id={{project.id}}><a href="{{url_for('show_plant_list', plant_list_id=plantlist.id)}}">{{plantlist.name}}</a><button class="btn btn-sm text-danger proj-rmv-plntlst-btn"> <i class="fas fa-times"></i></button></li>
-                    {% else %}
-                        <li><p>No Plant Lists connected yet.</p></li>
-                    {% endfor %}
-                    </ul>
+                <h5>Connected Plant Lists <small class="align-top" style="cursor: pointer;"><span class="badge badge-info add-btn" data-toggle="modal" data-target="#projectAddPlantlistModal-{{project.id}}" data-primary="project" data-secondary="plantlists">Add</span></small></h5>
+                <ul class="plantlist-list secondary">
+                {% for plantlist in project.plantlists %}
+                    <li data-secondary-id={{plantlist.id}}><a href="{{url_for('show_plantlist', plantlist_id=plantlist.id)}}">{{plantlist.name}}</a><button class="btn btn-sm text-danger proj-rmv-plntlst-btn"> <i class="fas fa-times"></i></button></li>
+                {% else %}
+                    <li><p>No Plant Lists connected yet.</p></li>
+                {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
 
 
-  <!--Add Plots Modal -->
-  
-  <div class="modal fade" id="addPlotModal-{{project.id}}" tabindex="-1" role="dialog" aria-labelledby="addPlotModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addPlotModalLabel">Add Plots</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <!--Add Plots Modal -->
+
+    <div class="modal fade" id="projectAddPlotModal-{{project.id}}" tabindex="-1" role="dialog" aria-labelledby="projectAddPlotModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="projectAddPlotModalLabel">Add Plots</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body" data-primary-id="{{project.id}}">
+            
+                <form class="add-form" data-primary="project" data-secondary="plots">
+                    {{macro_form(form_plot)}}
+                               
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form>
         </div>
-        <div class="modal-body" data-project-id="{{project.id}}">
-          
-            <form id="add-plots-form">
-                {{ form_plot.hidden_tag() }}
-
-
-                {% for field in form_plot if field.widget.input_type != 'hidden' %}
-                {{field.id}}
-                <!-- {{field.label}} -->
-                {{field.name}}
-                {{field.description}}
-                {{field.gettext}}
-                {{field.iter_choices()}}
-                  <div class="form-group">
-                   <b>{{field.label}}</b>
-                    {{field(class_="form-control")}}
-                    {% for err in field.errors %}
-                    <small class="form-text text-danger">
-                        {{err}}
-                    </small>
-                  {% endfor %}
-                </div>
-                {% endfor %}
-                
-
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
-            </form>
-
-      </div>
     </div>
-  </div>
+
+    <!--Add Plantlists Modal -->
+
+    <div class="modal fade" id="projectAddPlantlistModal-{{project.id}}" tabindex="-1" role="dialog" aria-labelledby="projectAddPlantlistModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="projectAddPlantlistModalLabel">Add Plant Lists</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body" data-primary-id="{{project.id}}">
+            
+                <form class="add-form" data-primary="project" data-secondary="plantlists">
+                    {{macro_form(form_plantlist)}}
+                               
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form>
+        </div>
+        </div>
+    </div>
+  
 
 
     {% endfor %}
     </div>
 </div>
 
+<div class="container-fluid content-divider" >	
+    <h2 class="text-center text-white font-weight-bold" >Plots</h2>
+</div>
+
+
+  <div class="container content-plots">
+    <div class="list-group list-group-flush">
+      {% for plot in user.plots %}
+  
+          <div class="list-group-item" data-primary="plot" data-primary-id="{{plot.id}}">
+          <div class="row">
+              <div class="col-12 col-lg-5 col-sm-12">
+                  <h4><a href="{{url_for('show_plot', plot_id=plot.id)}}">{{plot.name}}</a></h4>
+                  <p>{{plot.description}}</p>
+              </div>
+              <div class="col-12 col-lg col-sm-6 border-left">
+                  <h5>Connected Projects <small class="align-top" style="cursor: pointer;"><span class="badge badge-info add-btn" data-toggle="modal" data-target="#plotAddProjectModal-{{plot.id}}" data-primary="plot" data-secondary="projects">Add</span></small></h5>
+                  <ul class="project-list secondary">
+                  {% for project in plot.projects %}
+                      <li data-secondary-id={{project.id}}><a href="{{url_for('show_project', project_id=project.id)}}">{{project.name}}</a><button class="btn btn-sm text-danger proj-rmv-plot-btn"> <i class="fas fa-times"></i></button></li>
+  
+                  {% else %}
+                      <li><p>No Projects connected yet.</p></li>
+                  {% endfor %}
+                  </ul>
+              </div>   
+              <div class="col-12 col-lg col-sm-6 border-left">
+                  <h5>Connected Plant Lists <small class="align-top" style="cursor: pointer;"><span class="badge badge-info add-btn" data-toggle="modal" data-target="#plotAddPlantlistModal-{{plot.id}}" data-primary="plot" data-secondary="plantlists">Add</span></small></h5>
+                  <ul class="plantlist-list secondary">
+                  {% for plantlist in plot.plantlists %}
+                      <li data-secondary-id={{plantlist.id}}><a href="{{url_for('show_plantlist', plantlist_id=plantlist.id)}}">{{plantlist.name}}</a><button class="btn btn-sm text-danger proj-rmv-plntlst-btn"> <i class="fas fa-times"></i></button></li>
+                  {% else %}
+                      <li><p>No Plant Lists connected yet.</p></li>
+                  {% endfor %}
+                  </ul>
+              </div>
+          </div>
+      </div>
+  
+  
+      <!--Add Projects Modal -->
+  
+      <div class="modal fade" id="plotAddProjectModal-{{plot.id}}" tabindex="-1" role="dialog" aria-labelledby="plotAddProjectModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+              <h5 class="modal-title" id="plotAddProjectModalLabel">Add Projects</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+              <div class="modal-body" data-primary-id="{{plot.id}}">
+              
+                  <form class="add-form" data-primary="plot" data-secondary="projects">
+                      {{macro_form(form_project)}}
+                                 
+  
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+                  </form>
+          </div>
+          </div>
+      </div>
+  
+      <!--Add Plantlists Modal -->
+  
+      <div class="modal fade" id="plotAddPlantlistModal-{{plot.id}}" tabindex="-1" role="dialog" aria-labelledby="plotAddPlantlistModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+              <h5 class="modal-title" id="plotAddPlantlistModalLabel">Add Plant Lists</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+              <div class="modal-body" data-primary-id="{{plot.id}}">
+              
+                  <form class="add-form" data-primary="plot" data-secondary="plantlists">
+                      {{macro_form(form_plantlist)}}
+                                 
+  
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+                  </form>
+          </div>
+          </div>
+      </div>
+    
+  
+  
+      {% endfor %}
+      </div>
+  </div>
+
+
+
+
 <div class="container-fluid content-divider">
+    <h2 class="text-center text-white font-weight-bold" >Plant Lists</h2>
 
 </div>
 
 
-  <p class="text">Lists: </p>
-  <ul>
-  {% for plantlist in user.plantlists %}
-  <li><a href="{{url_for('show_plant_list', plant_list_id=plantlist.id)}}">{{plantlist.name}}</a></li>
-  {% endfor %}
-  </ul>
+<div class="container content-plantlists">
+    <div class="list-group list-group-flush">
+      {% for plantlist in user.plantlists %}
+  
+          <div class="list-group-item" data-primary="plantlist" data-primary-id="{{plantlist.id}}">
+          <div class="row">
+              <div class="col-12 col-lg-5 col-sm-12">
+                  <h4><a href="{{url_for('show_plantlist', plantlist_id=plantlist.id)}}">{{plantlist.name}}</a></h4>
+                  <p>{{plantlist.description}}</p>
+              </div>
+              <div class="col-12 col-lg col-sm-6 border-left">
+                  <h5>Connected Projects <small class="align-top" style="cursor: pointer;"><span class="badge badge-info add-btn" data-toggle="modal" data-target="#plantlistAddProjectModal-{{plantlist.id}}" data-primary="plantlist" data-secondary="projects">Add</span></small></h5>
+                  <ul class="project-list secondary">
+                  {% for project in plantlist.projects %}
+                      <li data-secondary-id={{project.id}}><a href="{{url_for('show_project', project_id=project.id)}}">{{project.name}}</a><button class="btn btn-sm text-danger proj-rmv-plantlist-btn"> <i class="fas fa-times"></i></button></li>
+  
+                  {% else %}
+                      <li><p>No Projects connected yet.</p></li>
+                  {% endfor %}
+                  </ul>
+              </div>   
+              <div class="col-12 col-lg col-sm-6 border-left">
+                <h5>Connected Plots <small class="align-top" style="cursor: pointer;"><span class="badge badge-info add-btn" data-toggle="modal" data-target="#plantlistAddPlotModal-{{plantlist.id}}" data-primary="plantlist" data-secondary="plots">Add</span></small></h5>
+                <ul class="plot-list secondary">
+                {% for plot in plantlist.plots %}
+                    <li data-secondary-id={{plot.id}}><a href="{{url_for('show_plot', plot_id=plot.id)}}">{{plot.name}}</a><button class="btn btn-sm text-danger proj-rmv-plot-btn"> <i class="fas fa-times"></i></button></li>
+
+                {% else %}
+                    <li><p>No Plots connected yet.</p></li>
+                {% endfor %}
+                </ul>
+            </div>   
+          </div>
+      </div>
+
+        
+      <!--Add Projects Modal -->
+  
+      <div class="modal fade" id="plantlistAddProjectModal-{{plantlist.id}}" tabindex="-1" role="dialog" aria-labelledby="plantlistAddProjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="plantlistAddProjectModalLabel">Add Projects</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body" data-primary-id="{{plantlist.id}}">
+            
+                <form class="add-form" data-primary="plantlist" data-secondary="projects">
+                    {{macro_form(form_project)}}
+                               
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form>
+        </div>
+        </div>
+    </div>
 
 
-<div class="container-fluid content-divider">
+    <!--Add Plots Modal -->
 
+    <div class="modal fade" id="plantlistAddPlotModal-{{plantlist.id}}" tabindex="-1" role="dialog" aria-labelledby="plantlistAddPlotModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="plantlistAddPlotModalLabel">Add Plots</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body" data-primary-id="{{plantlist.id}}">
+            
+                <form class="add-form" data-primary="plantlist" data-secondary="plots">
+                    {{macro_form(form_plot)}}
+                               
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form>
+        </div>
+        </div>
+    </div>
+
+  
+    {% endfor %}
 </div>
-
-  <p class="text">Plots: </p>
-  <ul>
-  {% for plot in user.plots %}
-  <li>{{plot.name}}</li>
-  {% endfor %}
-  </ul>
 </div>
-
-
-
 
 
 {% endblock %}
 {% block code %}
 <script src="/static/changeConnection.js"></script>
-<script src="/static/subform.js"></script>
+<script src="/static/query.js"></script>
+<script src="/static/contentSubform.js"></script>
+
 {% endblock %}

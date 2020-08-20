@@ -2,17 +2,6 @@
 
 console.log('START changeConnection.js');
 
-//Cache common DOM elements
-const $projRmvPlotBtn = $('.proj-rmv-plot-btn');
-const $projRmvPlntlstBtn = $('.proj-rmv-plntlst-btn');
-const $plotRmvPlntLstBtn = $('.plot-rmv-plntlst-btn');
-// const $projectsForm = $('#add-projects-form');
-// const $plotsForm = $('#add-plots-form');
-
-const dataAttrProjectId = 'data-project-id';
-const dataAttrPlotId = 'data-plot-id';
-const dataAttrPlantListId = 'data-plantlist-id';
-
 class Connection {
 	constructor() {
 		//Change out based on deployment
@@ -48,40 +37,3 @@ class Connection {
 		const res = await axios.post(`${this.baseUrl}/projects/${projectId}/add/plot/${plotId}`);
 	}
 }
-
-function generateOptionHTML(value, text) {
-	return `
-	<option value="${value}">${text}</option>
-	`;
-}
-
-$projRmvPlotBtn.click(function(evt) {
-	const plotId = $(evt.currentTarget).parent().attr(dataAttrPlotId);
-	const projectId = $(evt.currentTarget).parent().attr(dataAttrProjectId);
-
-	Connection.projectRemovePlot(projectId, plotId);
-	$(evt.currentTarget).parent().remove();
-});
-
-$('ul').on('click', '.proj-rmv-plntlst-btn', function(evt) {
-	const $li = $(evt.currentTarget).parent();
-	const plantlistId = $li.attr(dataAttrPlantListId);
-	const projectId = $li.attr(dataAttrProjectId);
-
-	Connection.projectRemovePlantList(projectId, plantlistId);
-	$li.remove();
-
-	$('#projects').append(generateOptionHTML(projectId, $li.text()));
-});
-
-$('ul').on('click', '.plot-rmv-plntlst-btn', function(evt) {
-	evt.preventDefault();
-	const $li = $(evt.currentTarget).parent();
-	const plantlistId = $li.attr(dataAttrPlantListId);
-	const plotId = $li.attr(dataAttrPlotId);
-
-	Connection.plotRemovePlantList(plotId, plantlistId);
-	$li.remove();
-
-	$('#plots').append(generateOptionHTML(plotId, $li.text()));
-});

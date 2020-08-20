@@ -2,12 +2,12 @@
 {% block content %}
 
 <div class="container mt-4">
-    <h1>Edit {{plant_list.name}}</h1>
+    <h1>Edit {{plantlist.name}}</h1>
     <p>Editing the plant list details will not affect which plants are associated with it. As usual you can add plants to it by searching <a href="{{url_for('plants_search_table')}}">searching plants</a>, and adding them from the plant profile.</p>
 
     <form method="POST">
     {% include 'base-form.html' %}
-    <a class="btn btn-secondary" href="{{url_for('show_plant_list', plant_list_id=plant_list.id)}}">Cancel</a>
+    <a class="btn btn-secondary" href="{{url_for('show_plantlist', plantlist_id=plantlist.id)}}">Cancel</a>
     <button class="btn btn-primary">Edit Plant List</button>
     </form>
 </div>

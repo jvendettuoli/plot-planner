@@ -30,7 +30,7 @@
         <a class="nav-link" href="{{url_for('add_projects')}}">Projects</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{url_for('add_plant_lists')}}">Plant Lists</a>
+        <a class="nav-link" href="{{url_for('add_plantlists')}}">Plant Lists</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('add_plots')}}">Plots</a>
@@ -61,7 +61,7 @@
               <div class="dropdown-divider"></div>
               <!--{# <a class="dropdown-item" href="{{url_for('show_projects',user_id=g.user.id)}}">My Projects</a>
               <a class="dropdown-item" href="/plots">My Plots</a>
-              <a class="dropdown-item" href="/plant_lists">My Plant Lists
+              <a class="dropdown-item" href="/plantlists">My Plant Lists
               </a> #} -->
               <a class="dropdown-item" href="{{url_for('user_content', user_id=g.user.id)}}">My Content</a> 
              

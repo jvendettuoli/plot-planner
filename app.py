@@ -26,6 +26,7 @@ from forms import (
     PlantListAddForm,
     AddPlotForm,
     AddProjectForm,
+    AddPlantListForm,
 )
 from models import db, connect_db, User, Project, Plot, PlantList, Plant
 from secret import TREFLE_API_KEY, FLASK_SECRET
@@ -227,18 +228,28 @@ def user_content(user_id):
     user = User.query.get_or_404(user_id)
 
     form_plot = AddPlotForm()
-    form_plot.plots.choices = [(plot.id, plot.name,) for plot in g.user.plots if plot]
+    form_plot.plots.choices = [(plot.id, plot.name,) for plot in g.user.plots]
+    form_plantlist = AddPlantListForm()
+    form_plantlist.plantlists.choices = [
+        (plantlist.id, plantlist.name,) for plantlist in g.user.plantlists
+    ]
 
-    # form_project = AddProjectForm()
-    # form_project.projects.choices = [
-    #     (project.id, project.name,) for project in g.user.projects
-    # ]
+    form_project = AddProjectForm()
+    form_project.projects.choices = [
+        (project.id, project.name,) for project in g.user.projects
+    ]
 
     if g.user.id != user.id:
         flash("Not authorized to view this page.", "danger")
         return redirect(url_for("homepage"))
 
-    return render_template("users/content.html", user=user, form_plot=form_plot)
+    return render_template(
+        "users/content.html",
+        user=user,
+        form_plot=form_plot,
+        form_plantlist=form_plantlist,
+        form_project=form_project,
+    )
 
 
 @app.route("/users/delete", methods=["POST"])
@@ -260,8 +271,8 @@ def add_projects():
     """Explains what projects are and shows form to add new projects"""
     form = ProjectAddForm()
     form.plots.choices = [(plot.id, plot.name,) for plot in g.user.plots]
-    form.plant_lists.choices = [
-        (plant_list.id, plant_list.name,) for plant_list in g.user.plantlists
+    form.plantlists.choices = [
+        (plantlist.id, plantlist.name,) for plantlist in g.user.plantlists
     ]
     if form.validate_on_submit():
 
@@ -279,9 +290,9 @@ def add_projects():
                 plot = Plot.query.get(plot)
                 project.plots.append(plot)
             # Append selected plant list to the project
-            for plant_list in form.plant_lists.data:
-                plant_list = PlantList.query.get(plant_list)
-                project.plantlists.append(plant_list)
+            for plantlist in form.plantlists.data:
+                plantlist = PlantList.query.get(plantlist)
+                project.plantlists.append(plantlist)
 
             db.session.commit()
 
@@ -332,43 +343,43 @@ def project_add_plot(project_id, plot_id):
 
 
 @app.route(
-    "/projects/<int:project_id>/remove/plantlist/<int:plant_list_id>", methods=["POST"]
+    "/projects/<int:project_id>/remove/plantlist/<int:plantlist_id>", methods=["POST"]
 )
-def project_remove_plant_list(project_id, plant_list_id):
-    """Remove specific plant_list from a project"""
+def project_remove_plantlist(project_id, plantlist_id):
+    """Remove specific plantlist from a project"""
     project = Project.query.get_or_404(project_id)
-    plant_list = PlantList.query.get_or_404(plant_list_id)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
 
-    project.plantlists.remove(plant_list)
+    project.plantlists.remove(plantlist)
     db.session.commit()
 
     return (
-        f"Plant List {plant_list_id} remove from Project {project_id} successfully.",
+        f"Plant List {plantlist_id} remove from Project {project_id} successfully.",
         200,
     )
 
 
 @app.route(
-    "/projects/<int:project_id>/add/plantlist/<int:plant_list_id>", methods=["POST"]
+    "/projects/<int:project_id>/add/plantlist/<int:plantlist_id>", methods=["POST"]
 )
-def project_add_plant_list(project_id, plant_list_id):
-    """Add specific plant_list to a project"""
+def project_add_plantlist(project_id, plantlist_id):
+    """Add specific plantlist to a project"""
     project = Project.query.get_or_404(project_id)
-    plant_list = PlantList.query.get_or_404(plant_list_id)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
 
-    project.plantlists.append(plant_list)
+    project.plantlists.append(plantlist)
     db.session.commit()
 
     return (
-        f"Plant List {plant_list_id} added to project {project_id} successfully.",
+        f"Plant List {plantlist_id} added to project {project_id} successfully.",
         200,
     )
 
 
 ##############################################################################
 # Plant List Routes
-@app.route("/plant_lists", methods=["GET", "POST"])
-def add_plant_lists():
+@app.route("/plantlists", methods=["GET", "POST"])
+def add_plantlists():
     """Shows existing plant lists, and form to add new plant lists"""
     form = PlantListAddForm()
     form.projects.choices = [(project.id, project.name,) for project in g.user.projects]
@@ -377,22 +388,22 @@ def add_plant_lists():
     if form.validate_on_submit():
 
         try:
-            plant_list = PlantList.add(
+            plantlist = PlantList.add(
                 name=form.name.data,
                 description=form.description.data,
                 is_public=form.is_public.data,
             )
             db.session.commit()
-            g.user.plantlists.append(plant_list)
+            g.user.plantlists.append(plantlist)
 
             # Append selected plots to the project
             for plot in form.plots.data:
                 plot = Plot.query.get(plot)
-                plant_list.plots.append(plot)
+                plantlist.plots.append(plot)
             # Append plot to selected projects
             for project in form.projects.data:
                 project = Project.query.get(project)
-                plant_list.projects.append(project)
+                plantlist.projects.append(project)
 
             db.session.commit()
 
@@ -402,87 +413,87 @@ def add_plant_lists():
 
         flash("Successfully created plant list!", "success")
 
-        return redirect(url_for("show_plant_list", plant_list_id=plant_list.id))
+        return redirect(url_for("show_plantlist", plantlist_id=plantlist.id))
 
     return render_template("plantlists/add.html", form=form)
 
 
-@app.route("/plant_lists/<int:plant_list_id>", methods=["GET"])
-def show_plant_list(plant_list_id):
+@app.route("/plantlists/<int:plantlist_id>", methods=["GET"])
+def show_plantlist(plantlist_id):
     """Show specific plant list"""
-    plant_list = PlantList.query.get_or_404(plant_list_id)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
 
     form_plot = AddPlotForm()
     form_plot.plots.choices = [
-        (plot.id, plot.name,) for plot in g.user.plots if plot not in plant_list.plots
+        (plot.id, plot.name,) for plot in g.user.plots if plot not in plantlist.plots
     ]
     form_project = AddProjectForm()
     form_project.projects.choices = [
         (project.id, project.name,)
         for project in g.user.projects
-        if project not in plant_list.projects
+        if project not in plantlist.projects
     ]
 
-    plant_list = PlantList.query.get_or_404(plant_list_id)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
 
     return render_template(
         "plantlists/show.html",
         form_plot=form_plot,
         form_project=form_project,
-        plant_list=plant_list,
+        plantlist=plantlist,
     )
 
 
-@app.route("/plant_lists/<int:plant_list_id>/edit", methods=["GET", "POST"])
-def edit_plant_list(plant_list_id):
+@app.route("/plantlists/<int:plantlist_id>/edit", methods=["GET", "POST"])
+def edit_plantlist(plantlist_id):
     """Edit specific plant list"""
-    plant_list = PlantList.query.get_or_404(plant_list_id)
-    form = PlantListAddForm(obj=plant_list)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
+    form = PlantListAddForm(obj=plantlist)
     form.projects.choices = [(project.id, project.name,) for project in g.user.projects]
     form.plots.choices = [(plot.id, plot.name,) for plot in g.user.plots]
 
     if form.validate_on_submit():
 
         try:
-            plant_list.edit(
+            plantlist.edit(
                 name=form.name.data,
                 description=form.description.data,
                 is_public=form.is_public.data,
             )
             db.session.commit()
-            g.user.plantlists.append(plant_list)
+            g.user.plantlists.append(plantlist)
 
             # Append selected plots to the project
             for plot in form.plots.data:
                 plot = Plot.query.get(plot)
-                plant_list.plots.append(plot)
+                plantlist.plots.append(plot)
             # Append plot to selected projects
             for project in form.projects.data:
                 project = Project.query.get(project)
-                plant_list.projects.append(project)
+                plantlist.projects.append(project)
 
             db.session.commit()
 
         except IntegrityError:
             flash("Failed to edit plant list.", "danger")
             return render_template(
-                "plantlists/edit.html", form=form, plant_list=plant_list
+                "plantlists/edit.html", form=form, plantlist=plantlist
             )
 
         flash("Successfully edited plant list!", "success")
 
-        return redirect(url_for("show_plant_list", plant_list_id=plant_list.id))
+        return redirect(url_for("show_plantlist", plantlist_id=plantlist.id))
 
-    return render_template("plantlists/edit.html", form=form, plant_list=plant_list)
+    return render_template("plantlists/edit.html", form=form, plantlist=plantlist)
 
 
-@app.route("/plant_lists/<int:plant_list_id>/delete", methods=["POST"])
+@app.route("/plantlists/<int:plantlist_id>/delete", methods=["POST"])
 @check_authorized
-def delete_plant_list(plant_list_id):
+def delete_plantlist(plantlist_id):
     """Delete plant list"""
-    plant_list = PlantList.query.get_or_404(plant_list_id)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
 
-    db.session.delete(plant_list)
+    db.session.delete(plantlist)
     db.session.commit()
 
     return redirect(url_for("user_content", user_id=g.user.id))
@@ -536,34 +547,32 @@ def show_plot(plot_id):
     return render_template("plots/show.html", plot=plot)
 
 
-@app.route(
-    "/plots/<int:plot_id>/remove/plantlist/<int:plant_list_id>", methods=["POST"]
-)
-def plot_remove_plant_list(plot_id, plant_list_id):
-    """Remove specific plant_list from a plot"""
+@app.route("/plots/<int:plot_id>/remove/plantlist/<int:plantlist_id>", methods=["POST"])
+def plot_remove_plantlist(plot_id, plantlist_id):
+    """Remove specific plantlist from a plot"""
     plot = Plot.query.get_or_404(plot_id)
-    plant_list = PlantList.query.get_or_404(plant_list_id)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
 
-    plot.plantlists.remove(plant_list)
+    plot.plantlists.remove(plantlist)
     db.session.commit()
 
     return (
-        f"Plant List {plant_list_id} remove from plot {plot_id} successfully.",
+        f"Plant List {plantlist_id} remove from plot {plot_id} successfully.",
         200,
     )
 
 
-@app.route("/plots/<int:plot_id>/add/plantlist/<int:plant_list_id>", methods=["POST"])
-def plot_add_plant_list(plot_id, plant_list_id):
-    """Add specific plant_list to a plot"""
+@app.route("/plots/<int:plot_id>/add/plantlist/<int:plantlist_id>", methods=["POST"])
+def plot_add_plantlist(plot_id, plantlist_id):
+    """Add specific plantlist to a plot"""
     plot = Plot.query.get_or_404(plot_id)
-    plant_list = PlantList.query.get_or_404(plant_list_id)
+    plantlist = PlantList.query.get_or_404(plantlist_id)
 
-    plot.plantlists.append(plant_list)
+    plot.plantlists.append(plantlist)
     db.session.commit()
 
     return (
-        f"Plant List {plant_list_id} added to plot {plot_id} successfully.",
+        f"Plant List {plantlist_id} added to plot {plot_id} successfully.",
         200,
     )
 
@@ -584,9 +593,9 @@ def plants_search_table():
     }
 
     plants = requests.get(f"{API_BASE_URL}/plants", params=payload)
-    plant_list = [plant for plant in plants.json()["data"]]
+    plantlist = [plant for plant in plants.json()["data"]]
 
-    return render_template("plants/search_table.html", form=form, plant_list=plant_list)
+    return render_template("plants/search_table.html", form=form, plantlist=plantlist)
 
 
 @app.route("/plants/<plant_slug>", methods=["GET"])
@@ -604,9 +613,46 @@ def plant_profile(plant_slug):
         main_species = plant["main_species"]
     else:
         main_species = plant
-    # plant_list = [plant for plant in plants.json()["data"]]
+    # plantlist = [plant for plant in plants.json()["data"]]
 
     return render_template("plants/profile.html", main_species=main_species)
+
+
+##############################################################################
+# Query Routes
+@app.route("/query/<primary_type>/<int:primary_id>/<secondary_type>", methods=["GET"])
+def query_connections(primary_type, primary_id, secondary_type):
+    """Returns JSON of connections based on request types and primary ID. Used for dynamically populating connection lists and form options via JS requests."""
+
+    def get_options(primary):
+        return [
+            (getattr(item, "id"), getattr(item, "name"))
+            for item in getattr(g.user, secondary_type)
+            if item not in getattr(primary, secondary_type)
+        ]
+
+    def get_list(primary):
+        return [
+            (getattr(item, "id"), getattr(item, "name"))
+            for item in getattr(primary, secondary_type)
+        ]
+
+    if primary_type == "project":
+        project = Project.query.get_or_404(primary_id)
+        form_options = get_options(project)
+        list_items = get_list(project)
+
+    elif primary_type == "plot":
+        plot = Plot.query.get_or_404(primary_id)
+        form_options = get_options(plot)
+        list_items = get_list(plot)
+
+    elif primary_type == "plantlist":
+        plantlist = PlantList.query.get_or_404(primary_id)
+        form_options = get_options(plantlist)
+        list_items = get_list(plantlist)
+
+    return jsonify({"options": form_options, "list_items": list_items})
 
 
 ##############################################################################
@@ -647,9 +693,9 @@ def search_plants():
         # print("PLANTS DIR", dir(plants))
         print("PLANTS", plants.url)
 
-        plant_list = [plant for plant in plants.json()["data"]]
+        plantlist = [plant for plant in plants.json()["data"]]
         # raise
-        return jsonify(plant_list)
+        return jsonify(plantlist)
 
     else:
         print("FAILURE TO VALIDATE", form.errors)
