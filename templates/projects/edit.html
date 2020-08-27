@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h1>Edit {{project.name}}</h1>
+    <p>Editing the project will reset current connections to what is selected here.</p>
+
+    <form method="POST">
+    {% include 'base-form.html' %}
+    <a class="btn btn-secondary" href="{{url_for('show_project', project_id=project.id)}}">Cancel</a>
+    <button class="btn btn-primary">Edit Project</button>
+    </form>
+</div>
+{% endblock %}
+{% block code %}
+{% endblock %}

@@ -112,6 +112,14 @@ class Project(db.Model):
 
         return project
 
+    def edit(self, name, description, is_public):
+        """Edit plantlist information"""
+        self.name = name or self.name
+        self.description = description or self.description
+        self.is_public = is_public or self.is_public
+        db.session.add(self)
+        db.session.commit()
+
 
 class PlantList(db.Model):
     """PlantList Model - handles plant lists for users."""
@@ -122,6 +130,10 @@ class PlantList(db.Model):
     name = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
     is_public = db.Column(db.Boolean)
+
+    plants = db.relationship(
+        "Plant", secondary="plantlists_plants", backref="plantlists"
+    )
 
     @classmethod
     def add(cls, name, description="No plant list description.", is_public=False):
@@ -134,7 +146,7 @@ class PlantList(db.Model):
         return plantlist
 
     def edit(self, name, description, is_public):
-        """Edit user's profile information"""
+        """Edit plantlist information"""
         self.name = name or self.name
         self.description = description or self.description
         self.is_public = is_public or self.is_public
@@ -175,6 +187,16 @@ class Plot(db.Model):
         db.session.add(plot)
 
         return plot
+
+    def edit(self, name, description, width, length, is_public):
+        """Edit plot information"""
+        self.name = name or self.name
+        self.description = description or self.description
+        self.width = width or self.width
+        self.length = length or self.length
+        self.is_public = is_public or self.is_public
+        db.session.add(self)
+        db.session.commit()
 
 
 class Users_Projects(db.Model):

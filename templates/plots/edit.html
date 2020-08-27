@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h1>Edit {{plot.name}}</h1>
+    <p>Editing the plot will not affect existing plant placement, unless width and lenght are reduced. Any plants at the bottom and right of the plot will be cut off.</p>
+
+    <form method="POST">
+    {% include 'base-form.html' %}
+    <a class="btn btn-secondary" href="{{url_for('show_plot', plot_id=plot.id)}}">Cancel</a>
+    <button class="btn btn-primary">Edit Plot</button>
+    </form>
+</div>
+{% endblock %}
+{% block code %}
+{% endblock %}

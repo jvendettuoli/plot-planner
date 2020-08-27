@@ -1,20 +1,328 @@
+{% from 'macros.html' import img_carousel %}
 {% extends 'base.html' %}
 {% block content %}
-<h1>Plant Profile</h1>
+
 <div class="container">
-    <img src="{% if main_species['image_url'] == None %}/static/images/default-pic.png{% else %}{{main_species['image_url']}}{% endif %}" alt="{{main_species['common_name']}} image">
-{% for field in main_species %}
-    
-<p class="text">{{field}}: {{main_species[field]}}</p>
-{% endfor %}
+
+
+<div class="container my-3">
+    <div class="row">
+
+{# <form action="{{url_for('plantlist_add_plant', plant_id=main_species['id'], plantlist)}}"></form>
+<button class="btn btn-block btn-info">Add Plant to Existing Plant Lists</button> #}
+
+    </div>
+    <div class="row">
+        <!-- Plant Profile Image -->
+        <div class="col-6">
+            <img class="img-thumbnail plant-profile-pic" src="{% if main_species['image_url'] == None %}/static/images/default-pic.png{% else %}{{main_species['image_url']}}{% endif %}" alt="{{main_species['common_name']}} image">
+        </div>
+        <div class="col-6">
+            <!-- Plant Basic Details -->
+            <table class="table">
+                <tbody>
+                  <tr>
+                    <th scope="row">Common Name</th>
+                    <td>
+                        {% if main_species['common_name'] %}
+                        {{main_species['common_name']}}
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                    
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Scientific Name</th>
+                    <td>
+                        {% if main_species['scientific_name'] %}
+                        <i>{{main_species['scientific_name']}}</i></td>
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                  </tr>
+                  <tr>
+                    <th scope="row">Genus</th>
+                    <td> 
+                        {% if main_species['genus'] %}
+                        <i>{{main_species['genus']}}</i>
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Family</th>
+                    <td>
+                        {% if main_species['family'] %}
+                        {{main_species['family']}}
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Family Common Name</th>
+                    <td>{% if main_species['family_common_name'] %}
+                        {{main_species['family_common_name']}}
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Life Cycle</th>
+                    <td>{% if main_species['duration'] %}
+                        {{main_species['duration']|join(", ")|title}}
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Edible Parts</th>
+                    <td>{% if main_species['edible_part'] %}
+                        {{main_species['edible_part']|join(", ")|title}}
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Flower</th>
+                    <td>
+                        
+                        {% for characteristic, value in main_species['flower'].items() %}
+                        <b>{{characteristic|title}}</b>: {% if value and characteristic=='color'%}{{value|join(", ")|title}}
+                        {% elif value and characteristic=='conspicuous' %}
+                        {{value}}
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                        <br>
+                        {% endfor %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Foliage</th>
+                    <td>
+                        {% for type, values in main_species['foliage'].items() %}
+                        
+                        <b>{{type|replace('_',' ')|title}}</b>:
+                        {% if values and values != 'None' %}
+                            {% if values is not string %}
+                            {{values|join(", ")|title}}
+                            {% else %}
+                            {{values|title}}
+                            {% endif %}
+                        {% elif values == False %}
+                        False
+                        
+                        {% else %}
+                        <i>No data available.</i>
+                        
+                        {% endif %}
+                        <br>
+                        {% endfor %}
+                     
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Fruit and Seed</th>
+                    <td>{% if main_species['edible_part'] %}
+                        {{main_species['edible_part']|join(", ")|title}}
+                        {% else %}
+                        <i>No data available.</i>
+                        {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div id="accordion">
+    <!-- Plant Images -->
+    <div class="card">
+      <div class="card-header" id="main-accord-plant-images">
+        <h5 class="mb-0">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-plant-images" aria-expanded="true" aria-controls="collapse-plant-images">
+            Plant Images
+          </button>
+        </h5>
+      </div>  
+      <div id="collapse-plant-images" class="collapse" aria-labelledby="main-accord-plant-images" data-parent="#main-accord-plant-images">
+        <div class="card-body p-0 pl-4">
+                {% for feature, images in main_species['images'].items() %}
+                    <div class="card">
+                    <div class="card-header" id="accordion-{{feature}}">
+                        <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-accordion-{{feature}}" aria-expanded="true" aria-controls="accordion-{{feature}}">
+                            {{feature|title}}{% if images %} ({{images|length}}){% else %} (0){% endif %}
+                        </button>
+                        </h5>
+                    </div>
+                <div id="collapse-accordion-{{feature}}" class="collapse" aria-labelledby="heading-{{feature}}" data-parent="#accordion-{{feature}}">
+                    <div class="card-body">
+                        {% if images %}
+                        {{img_carousel(feature, images)}}
+                        {% else %}
+                        <i>No images available.</i>
+                        {% endif %}
+                    </div>
+                </div>
+                </div>
+                {% endfor %}
+        </div>
+      </div>
+    </div>
+    <!-- Plant Distribution -->
+    <div class="card">
+      <div class="card-header" id="main-accord-distribution">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-distribution" aria-expanded="false" aria-controls="collapse-distribution">
+            Distribution
+          </button>
+        </h5>
+      </div>
+      <div id="collapse-distribution" class="collapse" aria-labelledby="main-accord-distribution" data-parent="#main-accord-distribution">
+        <div class="card-body">
+            <div class="container" id="plant-distribution">
+                <table class="table">
+                    <tbody>
+                    {% for type,locations in main_species['distribution'].items() %}
+                    <tr>
+                        <th scope="row">{{type|title}}</th>
+                        <td>{% if locations %}
+                            {{locations|join(', ')|title}}   
+                            {% else %}
+                            <i>No data available.</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- Specifications -->
+    <div class="card">
+      <div class="card-header" id="main-accord-specifications">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-specifications" aria-expanded="false" aria-controls="collapse-specifications">
+            Specifications
+          </button>
+        </h5>
+      </div>
+      <div id="collapse-specifications" class="collapse" aria-labelledby="main-accord-specifications" data-parent="#main-accord-specifications">
+        <div class="card-body">
+            <div class="container" id="plant-specifications">
+                <table class="table">
+                    <tbody>
+                    {% for type, values in main_species['specifications'].items() %}
+                    <tr>
+                        <th scope="row">{{type|replace('_',' ')|title}}</th>
+                        <td>{% if values is mapping %}
+                            {% for key, value in values.items() %}
+                            {{value}} {{key}}
+                            {% endfor %}
+                            {% elif values and values != 'None' %}
+                            {{values}}
+
+                            {% else %}
+                            <i>No data available.</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- Growth -->
+    <div class="card">
+      <div class="card-header" id="main-accord-growth">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-growth" aria-expanded="false" aria-controls="collapse-growth">
+            Growth
+          </button>
+        </h5>
+      </div>
+      <div id="collapse-growth" class="collapse" aria-labelledby="main-accord-growth" data-parent="#main-accord-growth">
+        <div class="card-body">
+            <div class="container" id="plant-growth">
+                <table class="table">
+                    <tbody>
+                    {% for type, values in main_species['growth'].items() %}
+                    <tr>
+                        <th scope="row">{{type|replace('_',' ')|title}}</th>
+                        <td>{% if values is mapping %}
+                            {% for key, value in values.items() %}
+                                {% if value == 'None' or value == None %}
+                                <i>No data available.</i>
+                                {% else %}
+                                {{value}} {{key|replace('deg_f', 'F')|replace('deg_c', 'C')}}
+                                {% endif %}
+                            {% endfor %}
+                            {% elif values and values != 'None' %}
+                            {{values}}
+                            {% else %}
+                            <i>No data available.</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- Sources -->
+    <div class="card">
+      <div class="card-header" id="main-accord-sources">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-sources" aria-expanded="false" aria-controls="collapse-sources">
+            Sources
+          </button>
+        </h5>
+      </div>
+      <div id="collapse-sources" class="collapse" aria-labelledby="main-accord-sources" data-parent="#main-accord-sources">
+        <div class="card-body">
+            <div class="container" id="plant-sources">
+                <ul>
+                    {% for source in main_species['sources'] %}
+                    {% if source['url'] and source['url'] != 'None' %}
+                    <li>
+                        <a href="{{source['url']}}">{{source['url']}}</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    <i>No data available.</i>
+
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
 </div>
 
-
-
 {% endblock %}
 {% block code %}
-<script src="/static/app.js"></script>
+
 {% endblock %}

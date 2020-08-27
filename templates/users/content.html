@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="jumbotron jumbotron-fluid text-white" id="content-jumbo">
+<div class="jumbotron jumbotron-fluid text-white mb-0" id="content-jumbo">
     <div class="container text-backdrop-dark">
       <h1 class="display-4">My Content</h1>
       <p class="lead">The central hub for all Projects, Plots, and Plant Lists you have saved to your profile. View how everything is connected, add and remove connections, and checkout specific parts.</p>
@@ -10,8 +10,12 @@
     
 </div>
 
+
+<!-- Projects -->
+<div class="container-fluid content-divider" >	
+    <h2 class="text-center text-white font-weight-bold text-backdrop-dark" >Projects</h2>
+</div>
 <div class="container content-projects">
-  <h2 class="text-center">Projects</h2>
   <div class="list-group list-group-flush">
     {% for project in user.projects %}
 
@@ -44,7 +48,6 @@
             </div>
         </div>
     </div>
-
 
     <!--Add Plots Modal -->
 
@@ -87,7 +90,6 @@
                 <form class="add-form" data-primary="project" data-secondary="plantlists">
                     {{macro_form(form_plantlist)}}
                                
-
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
@@ -95,15 +97,14 @@
         </div>
         </div>
     </div>
-  
-
-
     {% endfor %}
     </div>
 </div>
 
+<!-- Plots -->
+
 <div class="container-fluid content-divider" >	
-    <h2 class="text-center text-white font-weight-bold" >Plots</h2>
+    <h2 class="text-center text-white font-weight-bold text-backdrop-dark" >Plots</h2>
 </div>
 
 
@@ -141,9 +142,7 @@
           </div>
       </div>
   
-  
       <!--Add Projects Modal -->
-  
       <div class="modal fade" id="plotAddProjectModal-{{plot.id}}" tabindex="-1" role="dialog" aria-labelledby="plotAddProjectModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -157,8 +156,6 @@
               
                   <form class="add-form" data-primary="plot" data-secondary="projects">
                       {{macro_form(form_project)}}
-                                 
-  
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary">Save changes</button>
               </div>
@@ -182,8 +179,6 @@
               
                   <form class="add-form" data-primary="plot" data-secondary="plantlists">
                       {{macro_form(form_plantlist)}}
-                                 
-  
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary">Save changes</button>
               </div>
@@ -191,18 +186,15 @@
           </div>
           </div>
       </div>
-    
-  
-  
       {% endfor %}
       </div>
   </div>
 
 
 
-
+<!-- Plant Lists -->
 <div class="container-fluid content-divider">
-    <h2 class="text-center text-white font-weight-bold" >Plant Lists</h2>
+    <h2 class="text-center text-white font-weight-bold text-backdrop-dark" >Plant Lists</h2>
 
 </div>
 

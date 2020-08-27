@@ -92,7 +92,7 @@ class ProjectAddForm(FlaskForm):
     description = TextAreaField("Description", validators=[Optional()])
     plots = SelectMultipleField("Connect to your your existing plots:", coerce=int)
     plantlists = SelectMultipleField(
-        "Connect to your your existing plant lists:", coerce=int
+        "Connect to your existing plant lists:", coerce=int
     )
     is_public = BooleanField(
         "Would you like this project to be available for other users to copy?",
@@ -145,6 +145,10 @@ class PlotAddForm(FlaskForm):
         ],
     )
     projects = SelectMultipleField("Add to existing project:", coerce=int)
+    plantlists = SelectMultipleField(
+        "Connect to your existing plant lists:", coerce=int
+    )
+
     is_public = BooleanField(
         "Would you like this list to be available for other users to copy?",
         validators=[Optional()],

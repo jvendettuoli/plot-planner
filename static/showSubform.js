@@ -103,31 +103,31 @@ $projectsForm.submit(function(evt) {
 });
 // Handles Projects - Plot connections between subforms and connected lists
 
-$modalBody.on('submit', function(evt) {
-	evt.preventDefault();
-	console.log('Proj-PLOTFORM');
-	console.log('event', evt);
+// $modalBody.on('submit', function(evt) {
+// 	evt.preventDefault();
+// 	console.log('Proj-PLOTFORM');
+// 	console.log('event', evt);
 
-	const projectId = $(evt.currentTarget).attr(dataAttrProjectId);
-	console.log('evet target', evt.currentTarget);
-	console.log('ProjectID', projectId);
-	let serializedInputs = $(this).children('form').serializeArray();
-	console.log(serializedInputs);
+// 	const projectId = $(evt.currentTarget).attr(dataAttrProjectId);
+// 	console.log('evet target', evt.currentTarget);
+// 	console.log('ProjectID', projectId);
+// 	let serializedInputs = $(this).children('form').serializeArray();
+// 	console.log(serializedInputs);
 
-	// For each input, connect the plot and plantlist, and update the Connected Plots list and Plots form to reflect the new connection.
-	serializedInputs.forEach((element) => {
-		if (element.name !== 'csrf_token') {
-			Connection.projectAddPlot(projectId, element.value);
-			const optionText = $(`option:selected[value='${element.value}']`).text();
-			if ($plotList.text().includes('No plots connected yet.')) {
-				$plotList.empty();
-			}
-			console.log($(`#plot-list-${projectId}`));
-			$(`#plot-list-${projectId}`).append(generateLiHtml('plot', projectId, element.value, optionText));
-			$(`option:selected[value='${element.value}']`).remove();
-		}
-	});
-});
+// 	// For each input, connect the plot and plantlist, and update the Connected Plots list and Plots form to reflect the new connection.
+// 	serializedInputs.forEach((element) => {
+// 		if (element.name !== 'csrf_token') {
+// 			Connection.projectAddPlot(projectId, element.value);
+// 			const optionText = $(`option:selected[value='${element.value}']`).text();
+// 			if ($plotList.text().includes('No plots connected yet.')) {
+// 				$plotList.empty();
+// 			}
+// 			console.log($(`#plot-list-${projectId}`));
+// 			$(`#plot-list-${projectId}`).append(generateLiHtml('plot', projectId, element.value, optionText));
+// 			$(`option:selected[value='${element.value}']`).remove();
+// 		}
+// 	});
+// });
 
 // Handles Plots - Plant List connections between subforms and connected lists
 $plotsForm.submit(function(evt) {

@@ -26,18 +26,21 @@
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('plants_search_table')}}">Search Plants</a>
       </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Create
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{url_for('add_projects')}}">Create Project</a> 
+            <a class="dropdown-item" href="{{url_for('add_plots')}}">Create Plot</a>
+            <a class="dropdown-item" href="{{url_for('add_plantlists')}}">Create Plant List</a>
+        </div>
+      </li>      
       <li class="nav-item">
-        <a class="nav-link" href="{{url_for('add_projects')}}">Projects</a>
+        <a class="nav-link {" href="{{url_for('user_content', user_id=g.user.id)}}">My Content</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{url_for('add_plantlists')}}">Plant Lists</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{url_for('add_plots')}}">Plots</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">About Us</a>
-      </li>
+
 
     </ul>
     <ul class="navbar-nav justify-content-end">

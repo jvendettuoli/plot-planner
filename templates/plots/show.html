@@ -1,9 +1,115 @@
+{% from 'macros.html' import macro_form %}
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-    <h1>{{plot.name}}</h1>
+<div class="jumbotron jumbotron-fluid text-white" id="plot-show-jumbo">
+    <div class="container text-backdrop-dark">
+        <div class="row pr-4 ">
+            <div class="col">
+
+                <h1 class="display-4">{{plot.name}}</h1>
+                <p class="lead">{% if (plot.description != '' and plot.description != '')  %}
+                    {{plot.description}}
+                    {% else %}
+                    <i>No Description</i>
+                    {% endif %} </p>
+            </div>
+            <div class="col-2 align-self-center">
+                <div class="row justify-content-end">
+                        <form method="GET" action="{{url_for('edit_plot', plot_id=plot.id)}}"><button type="submit" class="btn btn-info mb-3">Edit</button></form>
+                </div>
+                <div class="row justify-content-end">
+                        <form method="POST" action="{{url_for('delete_plot', plot_id=plot.id)}}"><button type="submit" class="btn btn-danger">Delete</button></form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
- 
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-12 border-right">
+            <h5>Connected Projects</h5>
+                <ul id="project-list">
+                {% for project in plot.projects %}
+                    <li data-project-id={{project.id}} data-plot-id={{plot.id}}><a href="{{url_for('show_project', project_id=project.id)}}">{{project.name}}</a><button class="btn btn-sm text-danger proj-rmv-plot-btn"> <i class="fas fa-times"></i></button></li>
+                {% else %}
+                    <li><p>No projects connected yet.</p></li>
+                {% endfor %}
+                </ul>
+            
+
+        </div>   
+        <div class="col-md-6 col-12">
+            <h5>Connected Plant Lists</h5>
+                <ul id="plantlist-list">
+                {% for plantlist in plot.plantlists %}
+                    <li data-plantlist-id={{plantlist.id}} data-plot-id={{plot.id}}><a href="{{url_for('show_plantlist', plantlist_id=plantlist.id)}}">{{plantlist.name}}</a><button class="btn btn-sm text-danger plot-rmv-plntlst-btn"> <i class="fas fa-times"></i></button></li>
+                {% else %}
+                    <li><p>No plant lists connected yet.</p></li>
+                {% endfor %}
+                </ul>
+               
+        </div>   
+    </div>
+    <div class="row align-items-bottom">
+        <div class="col-6 ">
+        <button id="toggle-projects-btn" type="button" data-toggle="modal" data-target="#project-modal" class="btn btn-block btn-outline-info ">Show/Hide Your Other Projects <i class="fas fa-caret-down"></i></button>
+    </div>
+    <div class="col-6">
+        <button id="toggle-plantlists-btn" type="button" data-toggle="modal" data-target="#plantlist-modal" class="btn btn-block btn-outline-info">Show/Hide Your Other Plant Lists<i class="fas fa-caret-down"></i></button>
+    </div>
+    </div>
+</div>
+
+<div class="container" data-plot-id="{{plot.id}}">
+    <form class="mt-4" id="add-plantlists-form" style="display: none;">
+        {{macro_form(form_plantlist)}}
+        <button class="btn btn-block btn-info">Add Selected Plant Lists to Plot</button>
+    </form>
+    <form class="mt-4" id="add-projects-form" style="display: none;">
+        {{macro_form(form_project)}}
+        <div class="row">
+
+            <div class="col">
+                <button  class="btn btn-block btn-info">Add Selected Projects to Plot</button>
+            </div>
+        </div>
+    </form>
+</div>
+<hr>
+
+<div class="container">
+<h2>Design</h2>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="container plot-design">
+            {% for row in range(plot.length) %}
+                <div class="row justify-content-center plot-row">
+                    {% for col in range(plot.width) %}
+                    <div class="col plot-col" data-row="{{row}}" data-col="{{col}}">
+                        <i class="fas fa-seedling "></i>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="col">
+            <h3>Plant List</h3>
+            
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+
 {% endblock %}
 {% block code %}
+<script src="/static/changeConnection.js"></script>
+<script src="/static/showPlotSubform.js"></script>
+<script src="/static/plotDesign.js"></script>
 {% endblock %}
