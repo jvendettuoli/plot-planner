@@ -1,17 +1,41 @@
 {% from 'macros.html' import img_carousel %}
+{% from 'macros.html' import macro_form %}
 {% extends 'base.html' %}
 {% block content %}
 
 <div class="container">
 
+<!-- Add Plant to Plant list -->
+<div class="container mt-3">
 
+        {% if g.user  %}
+            {% if g.user.plantlists|length > 0  %}
+                {% if form.plantlists.choices|length > 0 %}
+
+                <button class="btn btn-block btn-info" data-toggle="modal" data-target="#plantlistAddPlantModal" data-primary="plot" data-secondary="projects">Add Plant to Existing Plant List</button>
+                {% else %}
+                <div class="alert alert-success" role="alert">
+                Plant already added to all available plant lists.
+                </div>
+                {% endif %}
+
+            {% else %}
+
+            <div class="alert alert-info" role="alert">
+            You need to have at least one plant list created in order to save plants. Create one <a href="{{url_for('add_plantlists')}}">here!</a>
+            </div>
+            {% endif %}
+
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            You need to be logged in order to save a plant to a plant list. <a href="{{url_for('signup')}}">Signup</a> or <a href="{{url_for('login')}}">Login</a> to start creating your own projects!
+          </div>
+        {% endif %}
+
+</div>
+
+<!-- Plant Info -->
 <div class="container my-3">
-    <div class="row">
-
-{# <form action="{{url_for('plantlist_add_plant', plant_id=main_species['id'], plantlist)}}"></form>
-<button class="btn btn-block btn-info">Add Plant to Existing Plant Lists</button> #}
-
-    </div>
     <div class="row">
         <!-- Plant Profile Image -->
         <div class="col-6">
@@ -270,8 +294,15 @@
                             {% for key, value in values.items() %}
                                 {% if value == 'None' or value == None %}
                                 <i>No data available.</i>
+                                <br>
                                 {% else %}
-                                {{value}} {{key|replace('deg_f', 'F')|replace('deg_c', 'C')}}
+                                    {% if 'deg' in key %}
+                                {{value}} &#176;{{key|replace('deg_f', 'F')|replace('deg_c', 'C')}} <br>
+                                    {% else %}
+                                    {{value}} {{key}}
+
+                                    {% endif %}
+
                                 {% endif %}
                             {% endfor %}
                             {% elif values and values != 'None' %}
@@ -322,7 +353,32 @@
 
 </div>
 
+
+
+      <!--Add to Plantlists Modal -->
+  
+      <div class="modal fade" id="plantlistAddPlantModal" tabindex="-1" role="dialog" aria-labelledby="plantlistAddPlantModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="plantlistAddPlantModalLabel">Add to Plant Lists</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body" data-primary-id="">
+            
+                <form class="add-form" data-primary="plot" data-secondary="plantlists" method="POST">
+                    {{macro_form(form)}}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form>
+        </div>
+        </div>
+    </div>
 {% endblock %}
 {% block code %}
+<!-- <script src="/static/addPlantToPlantlist.js"></script> -->
 
 {% endblock %}

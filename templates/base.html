@@ -38,7 +38,7 @@
         </div>
       </li>      
       <li class="nav-item">
-        <a class="nav-link {" href="{{url_for('user_content', user_id=g.user.id)}}">My Content</a>
+        <a class="nav-link {% if not g.user %} disabled {% endif %}" href="{% if not g.user %}#{% else %}{{url_for('user_content', user_id=g.user.id)}}{% endif %}">My Content</a>
       </li>
 
 
@@ -77,8 +77,8 @@
   </div>
 </nav>
 
-
-<div class="container">
+<!-- Flash Message -->
+<div class="container my-3">
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="alert alert-{{ category }}">{{ message }}</div>
   {% endfor %}

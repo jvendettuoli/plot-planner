@@ -81,6 +81,16 @@
 
 <div class="container">
 <h2>Plants</h2>
+<ul>
+    {% for plant in plantlist.plants %}
+    <li>
+       <a href="{{url_for('plant_profile', plant_slug = plant.slug)}}">{{plant.common_name}}</a> 
+    </li>
+    {% else %}
+    no plants
+    {% endfor %}
+</ul>
+
 
 </div>
 

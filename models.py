@@ -7,10 +7,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
+default_plant_pic = "/static/images/default-pic.png"
 
 
 class Plant(db.Model):
-    """Plant Model - handles storing a subset of the Trefle API data for each plant added to a plant list.
+    """Plant Model - Not user specific. This is based of trefle API data and is a much shortened version for displaying basics on a plant list and plot design.
     Methods for adding a new plant."""
 
     __tablename__ = "plants"
@@ -19,10 +20,37 @@ class Plant(db.Model):
     trefle_id = db.Column(db.Integer, nullable=False, unique=True)
     slug = db.Column(db.Text, nullable=False)
     common_name = db.Column(db.Text)
-    scientif_name = db.Column(db.Text)
+    scientific_name = db.Column(db.Text)
     family = db.Column(db.Text)
     family_common_name = db.Column(db.Text)
     image_url = db.Column(db.Text)
+
+    @classmethod
+    def add(
+        cls,
+        trefle_id,
+        slug,
+        common_name,
+        scientific_name,
+        family,
+        family_common_name,
+        image_url=default_plant_pic,
+    ):
+        """Adds new plant to database."""
+
+        plant = Plant(
+            trefle_id=trefle_id,
+            slug=slug,
+            common_name=common_name,
+            scientific_name=scientific_name,
+            family=family,
+            family_common_name=family_common_name,
+            image_url=image_url,
+        )
+
+        db.session.add(plant)
+
+        return plant
 
 
 class User(db.Model):

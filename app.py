@@ -13,7 +13,7 @@ from flask import (
 )
 from functools import wraps
 from flask_debugtoolbar import DebugToolbarExtension
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy import or_
 
 from forms import (
@@ -768,24 +768,74 @@ def plants_search_table():
     return render_template("plants/search_table.html", form=form, plantlist=plantlist)
 
 
-@app.route("/plants/<plant_slug>", methods=["GET"])
+@app.route("/plants/<plant_slug>", methods=["GET", "POST"])
 def plant_profile(plant_slug):
     """Shows specific plant page"""
+
+    form = AddPlantListForm()
 
     payload = {
         "token": TREFLE_API_KEY,
     }
 
-    plant = requests.get(f"{API_BASE_URL}/plants/{plant_slug}", params=payload).json()[
-        "data"
-    ]
-    if "main_species" in plant:
-        main_species = plant["main_species"]
+    trefle_plant = requests.get(
+        f"{API_BASE_URL}/plants/{plant_slug}", params=payload
+    ).json()["data"]
+    if "main_species" in trefle_plant:
+        main_species = trefle_plant["main_species"]
     else:
-        main_species = plant
-    # plantlist = [plant for plant in plants.json()["data"]]
+        main_species = trefle_plant
 
-    return render_template("plants/profile.html", main_species=main_species)
+    plant = Plant.query.filter(Plant.trefle_id == main_species["id"]).one_or_none()
+    print("PLANT @@@@@@@@@@@@@", plant)
+    print("PLANT @@@@@@@@@@@@@", plant.plantlists)
+    print("PLANT @@@@@@@@@@@@@", g.user.plantlists)
+
+    if plant:
+        form.plantlists.choices = [
+            (plantlist.id, plantlist.name,)
+            for plantlist in g.user.plantlists
+            if plantlist not in plant.plantlists
+        ]
+
+    else:
+        print("ELSE")
+        form.plantlists.choices = [
+            (plantlist.id, plantlist.name,) for plantlist in g.user.plantlists
+        ]
+
+    if request.method == "POST":
+        print("POST METHOD")
+        # print(main_species)
+        if not plant:
+
+            try:
+                plant = Plant.add(
+                    trefle_id=main_species["id"],
+                    slug=main_species["slug"],
+                    common_name=main_species["common_name"],
+                    scientific_name=main_species["scientific_name"],
+                    family=main_species["family"],
+                    family_common_name=main_species["family_common_name"],
+                    image_url=main_species["image_url"],
+                )
+
+                db.session.commit()
+
+            except IntegrityError:
+                flash("Failed to create plant.", "danger")
+                return render_template(
+                    "plants/profile.html", main_species=main_species, form=form
+                )
+
+        # Append selected plantlists to the plant
+        for plantlist in form.plantlists.data:
+            plantlist = PlantList.query.get(plantlist)
+            plant.plantlists.append(plantlist)
+
+        db.session.commit()
+
+    return render_template("plants/profile.html", main_species=main_species, form=form)
 
 
 ##############################################################################
