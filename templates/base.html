@@ -78,9 +78,9 @@
 </nav>
 
 <!-- Flash Message -->
-<div class="container my-3">
+<div class="container">
   {% for category, message in get_flashed_messages(with_categories=True) %}
-  <div class="alert alert-{{ category }}">{{ message }}</div>
+  <div class="alert alert-{{ category }} my-3">{{ message }}</div>
   {% endfor %}
 </div>
   {% block content %}

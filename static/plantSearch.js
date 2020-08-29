@@ -6,7 +6,7 @@ console.log('START plantSearch.js');
 const $plantForm = $('#plant-form');
 const $plantTableBody = $('#plant-table-body');
 
-class Plant {
+class Search {
 	constructor() {
 		//Change out based on deployment
 		this.baseURL = 'http://127.0.0.1:5000';
@@ -73,12 +73,14 @@ class Plant {
 		console.log('RES.data', res.data);
 
 		let plantList = [];
-		for (let item of res.data) {
+		for (let item of res.data[0]) {
 			plantList.push(await this.extractPlantData(item));
 		}
 		// console.log('plantList', plantList);
+		const links = res.data[1];
 
 		await this.populateTable(plantList);
+		await Pagination.updateLinks(links);
 	}
 }
 
@@ -96,7 +98,5 @@ $plantForm.submit(function(evt) {
 	}, {});
 	console.log('InputObj', inputsObj);
 
-	Plant.searchPlants(inputsObj);
+	Search.searchPlants(inputsObj);
 });
-
-// Plant.fetchAllPlants();

@@ -1,13 +1,19 @@
 {% from 'macros.html' import img_modal %}
+{% from 'macros.html' import replace_null %}
 {% extends 'base.html' %}
 {% block content %}
-<div class="jumbotron jumbotron-fluid text-white" id="search-jumbo">
+<div class="jumbotron jumbotron-fluid text-white mb-0" id="search-jumbo">
     <div class="container text-backdrop-dark" >
       <h1 class="display-4">Search Plants</h1>
       <p class="lead">Search by common name, species, or family and see what results you get, or use filters to narrow down the one million plants available through the the <a class="text-success" href="https://trefle.io/">trefle.io</a> API. Click the scientific name to see more details about the plant and add it to your Plant Lists!</p>
     </div>
 </div>
 <div class="container">
+
+<div class="alert alert-light" role="alert">
+    <i class="fas fa-info-circle"></i>
+    Information found here is still being updated may having missing or inaccurate data. Sources are listed for each plant on its profile page and corrections can be made <a href="https://docs.trefle.io/docs/advanced/complete-data/">here</a>.
+</div>
 
 <form method="" id="plant-form">
 {% include 'base-form.html' %}
@@ -28,9 +34,17 @@
 
 {% for plant in plantlist %}
     <tr>
-
-
-        <td>{{plant['common_name']}}</td>
+        <td>
+            {% if (plant['common_name'] and plant['common_name'] != 'None' and plant['common_name'] != 'null' and plant['common_name'] != null) %}
+                {{plant['common_name']}}
+            {% else %}
+                <i>No data available.</i> 
+            {% endif %}
+            
+                   
+        
+        
+        </td>
         <td><a href="/plants/{{plant['slug']}}">{{plant['scientific_name']}}</a></td>
         <td>{{plant['family_common_name']}}</td>
         <td>
@@ -47,21 +61,27 @@
 {% endfor %}
     </tbody>
 </table>
-<div class="d-flex justify-content-between">
-<div class="container">
-    <p><</p>
-    <i class="far fa-arrow-alt-circle-left"></i>
-</div>
-<div class="container">
-    <p class="text-right">></p>
-    <i class="far fa-arrow-alt-circle-right"></i>
-</div>
-</div>
-
+<nav aria-label="search results pagination">
+    <ul class="pagination justify-content-center">
+      <li id="page-first" class="page-item{% if not links.prev %} disabled{% endif %}">
+        <a class="page-link" data-page="{{links.first}}">First</a>
+      </li>
+      <li id="page-prev" class="page-item{% if not links.prev %} disabled{% endif %}" >
+        <a class="page-link" data-page="{{links.prev}}">Prev</a>
+      </li>
+      <li id="page-next" class="page-item{% if not links.next %} disabled{% endif %}"><a class="page-link" data-page="{{links.next}}">Next</a></li>
+   
+      <li id="page-last" class="page-item{% if not links.next %} disabled{% endif %}">
+        <a class="page-link" data-page="{{links.last}}">Last</a>
+      </li>
+    </ul>
+</nav>
+{{links}}
 
 
 
 {% endblock %}
 {% block code %}
 <script src="/static/plantSearch.js"></script>
+<script src="/static/pagination.js"></script>
 {% endblock %}

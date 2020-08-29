@@ -763,9 +763,13 @@ def plants_search_table():
     }
 
     plants = requests.get(f"{API_BASE_URL}/plants", params=payload)
+    print(plants.json())
     plantlist = [plant for plant in plants.json()["data"]]
+    links = plants.json()["links"]
 
-    return render_template("plants/search_table.html", form=form, plantlist=plantlist)
+    return render_template(
+        "plants/search_table.html", form=form, plantlist=plantlist, links=links
+    )
 
 
 @app.route("/plants/<plant_slug>", methods=["GET", "POST"])
@@ -914,12 +918,31 @@ def search_plants():
 
         plantlist = [plant for plant in plants.json()["data"]]
         # raise
-        return jsonify(plantlist)
+        links = plants.json()["links"]
+        return jsonify(plantlist, links)
 
     else:
         print("FAILURE TO VALIDATE", form.errors)
         response = {"errors": form.errors}
         return jsonify(response)
+
+
+@app.route("/api/plants/pagination", methods=["POST"])
+def plant_pagination():
+    """Allows for navigation through Trefle's Pagination routes. Takes in the pagination link and adds API Key"""
+
+    pagination_link = request.json["pagination_link"][7:]
+    auth_pagination_link = pagination_link + f"&token={TREFLE_API_KEY}"
+    print(auth_pagination_link)
+
+    plants = requests.get(f"{API_BASE_URL}{auth_pagination_link}")
+    print("RES", plants)
+    print("RES", plants.json())
+
+    plantlist = [plant for plant in plants.json()["data"]]
+    links = plants.json()["links"]
+
+    return jsonify(plantlist, links)
 
 
 ##############################################################################

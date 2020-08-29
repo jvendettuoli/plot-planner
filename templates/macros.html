@@ -70,3 +70,12 @@
   </div>
       
 {% endmacro %}
+
+<!-- Macro for checking if there is data is present before displaying it -->
+{% macro replace_null(data) %}
+  {% if data or data != 'None' or data != 'null' %}
+    {{data}}
+  {% else %}
+    <i>No data available.</i> 
+  {% endif %}
+{% endmacro %} 
