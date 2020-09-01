@@ -28,7 +28,17 @@ from forms import (
     AddProjectForm,
     AddPlantListForm,
 )
-from models import db, connect_db, User, Project, Plot, PlantList, Plant
+from models import (
+    db,
+    connect_db,
+    User,
+    Project,
+    Plot,
+    PlantList,
+    Plant,
+    Symbol,
+    PlantLists_Plants,
+)
 from secret import TREFLE_API_KEY, FLASK_SECRET
 
 CURR_USER_KEY = "curr_user"
@@ -494,6 +504,11 @@ def add_plantlists():
 def show_plantlist(plantlist_id):
     """Show specific plant list"""
     plantlist = PlantList.query.get_or_404(plantlist_id)
+    plantlists_plants = PlantLists_Plants.query.filter(
+        PlantLists_Plants.plantlist_id == plantlist_id
+    ).all()
+
+    plant_symbol_map = {item.plant_id: item.symbol for item in plantlists_plants}
 
     form_plot = AddPlotForm()
     form_plot.plots.choices = [
@@ -511,6 +526,8 @@ def show_plantlist(plantlist_id):
         form_plot=form_plot,
         form_project=form_project,
         plantlist=plantlist,
+        plant_symbol_map=plant_symbol_map,
+        symbol_size="fa-4x",
     )
 
 
@@ -584,6 +601,35 @@ def delete_plantlist(plantlist_id):
     return redirect(url_for("user_content", user_id=g.user.id))
 
 
+@app.route(
+    "/plantlists/<int:plantlist_id>/plant/<int:plant_id>/symbol/add", methods=["POST"]
+)
+def add_symbol(plantlist_id, plant_id):
+    """Creates symbol and add connection to a plant on plantlist page"""
+    plantlists_plants = PlantLists_Plants.query.filter(
+        PlantLists_Plants.plantlist_id == plantlist_id,
+        PlantLists_Plants.plant_id == plant_id,
+    ).first()
+
+    symbol = Symbol.query.filter(Symbol.symbol == request.json["symbol"]).first()
+
+    if not symbol:
+
+        try:
+            symbol = Symbol.add(symbol=request.json["symbol"])
+
+            db.session.commit()
+
+        except IntegrityError as e:
+            print("ISSUE MAKING SYMBOl", e)
+
+    plantlists_plants.edit(
+        plantlist_id=plantlist_id, plant_id=plant_id, symbol_id=symbol.id
+    )
+
+    return jsonify(symbol.symbol)
+
+
 ##############################################################################
 # Plot Routes
 @app.route("/plots", methods=["GET", "POST"])
@@ -626,7 +672,7 @@ def add_plots():
 
         flash("Successfully created plot!", "success")
 
-        return redirect(url_for("homepage"))
+        return redirect(url_for("show_plot", plot_id=plot.id))
 
     return render_template("plots/add.html", form=form)
 
@@ -790,23 +836,10 @@ def plant_profile(plant_slug):
     else:
         main_species = trefle_plant
 
+    # print("$$$$$$$$$$$$$$$$$$", main_species)
     plant = Plant.query.filter(Plant.trefle_id == main_species["id"]).one_or_none()
-    print("PLANT @@@@@@@@@@@@@", plant)
-    print("PLANT @@@@@@@@@@@@@", plant.plantlists)
-    print("PLANT @@@@@@@@@@@@@", g.user.plantlists)
 
-    if plant:
-        form.plantlists.choices = [
-            (plantlist.id, plantlist.name,)
-            for plantlist in g.user.plantlists
-            if plantlist not in plant.plantlists
-        ]
-
-    else:
-        print("ELSE")
-        form.plantlists.choices = [
-            (plantlist.id, plantlist.name,) for plantlist in g.user.plantlists
-        ]
+    print("$$$$$$$$$$$$$$$$$$", plant)
 
     if request.method == "POST":
         print("POST METHOD")
@@ -838,6 +871,19 @@ def plant_profile(plant_slug):
             plant.plantlists.append(plantlist)
 
         db.session.commit()
+
+    if plant:
+        form.plantlists.choices = [
+            (plantlist.id, plantlist.name,)
+            for plantlist in g.user.plantlists
+            if plantlist not in plant.plantlists
+        ]
+
+    else:
+        print("ELSE")
+        form.plantlists.choices = [
+            (plantlist.id, plantlist.name,) for plantlist in g.user.plantlists
+        ]
 
     return render_template("plants/profile.html", main_species=main_species, form=form)
 
@@ -879,6 +925,23 @@ def query_connections(primary_type, primary_id, secondary_type):
     return jsonify({"options": form_options, "list_items": list_items})
 
 
+@app.route("/query/plantlist/<int:plantlist_id>", methods=["GET"])
+def query_plantlist(plantlist_id):
+    plantlist = PlantList.query.get_or_404(plantlist_id)
+    plantlist_plants = PlantLists_Plants.query.filter(
+        PlantLists_Plants.plantlist_id == plantlist_id
+    ).all()
+
+    plants = [plant.common_name for plant in plantlist.plants]
+
+    plant_symbol_map = {
+        item.plant.common_name: item.symbol.symbol
+        for item in plantlist_plants
+        if item.symbol
+    }
+    return {"plants": plants, "plant_symbol_map": plant_symbol_map}
+
+
 ##############################################################################
 # Trefle API Routes
 
@@ -894,8 +957,8 @@ def search_plants():
         # Intialize payload with api key
         payload = {"token": TREFLE_API_KEY}
 
-        if "search" in form_data and form_data["search"] != "":
-            search_term = form_data["search"]
+        if "search" in form_data and form_data["search"][0] != "":
+            search_term = form_data["search"][0]
             print("search_term", search_term)
             payload["q"] = search_term
             request_string = f"{API_BASE_URL}/plants/search"
@@ -904,21 +967,43 @@ def search_plants():
             request_string = f"{API_BASE_URL}/plants"
 
         if "edible_part" in form_data:
-            # payload["filter_not[image_url]"] = ("null",)
-            # payload["filter_not[family_common_name]"] = ("null",)
-            payload["filter_not[edible_part]"] = "null"
+            payload["filter[edible_part]"] = ",".join(form_data["edible_part"])
 
-        if "nitrogen_fixation" in form_data:
-            payload["filter_not[toxicity]"] = "null"
+        if "flower_color" in form_data:
+            payload["filter[flower_color]"] = ",".join(form_data["flower_color"])
+
+        if "growth_months" in form_data:
+            payload["filter[growth_months]"] = ",".join(form_data["growth_months"])
+
+        if "bloom_months" in form_data:
+            payload["filter[bloom_months]"] = ",".join(form_data["bloom_months"])
+
+        if "fruit_months" in form_data:
+            payload["filter[fruit_months]"] = ",".join(form_data["fruit_months"])
+
+        if "ligneous_type" in form_data:
+            payload["filter[ligneous_type]"] = ",".join(form_data["ligneous_type"])
+
+        if "duration" in form_data:
+            payload["filter[duration]"] = ",".join(form_data["duration"])
+
+        if "vegetable" in form_data:
+            payload["filter[vegetable]"] = "true"
+
+        if "evergreen" in form_data:
+            payload["filter[leaf_retention]"] = "true"
 
         print("REQUEST STRING:", request_string, payload)
-        plants = requests.get(request_string, params=payload)
+        payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
+        plants = requests.get(request_string, params=payload_str)
         # print("PLANTS DIR", dir(plants))
         print("PLANTS", plants.url)
+        print(plants.json())
 
         plantlist = [plant for plant in plants.json()["data"]]
         # raise
         links = plants.json()["links"]
+        # print(plantlist)
         return jsonify(plantlist, links)
 
     else:

@@ -25,6 +25,12 @@ class Plant(db.Model):
     family_common_name = db.Column(db.Text)
     image_url = db.Column(db.Text)
 
+    # symbol = db.relationship(
+    #     "Symbol",
+    #     secondary="plantlists_plants",
+    #     primaryjoin="and_(PlantLists_Plants.plantlist_id==Plant.plantlists.id, PlantLists_Plants.plant_id==Plant.id)",
+    # )
+
     @classmethod
     def add(
         cls,
@@ -61,7 +67,7 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.Text, nullable=False, unique=True)
+    email = db.Column(db.Text, nullable=False)
     username = db.Column(db.Text, nullable=False, unique=True)
     image_url = db.Column(db.Text, default="/static/images/default-pic.png")
     password = db.Column(db.Text, nullable=False)
@@ -227,6 +233,29 @@ class Plot(db.Model):
         db.session.commit()
 
 
+class Symbol(db.Model):
+    """Symbol to represent a plant within a plot design."""
+
+    __tablename__ = "symbols"
+
+    id = db.Column(db.Integer, primary_key=True)
+    symbol = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f"<Symbol(id={self.id})>"
+        # return f"<Symbol(id='{self.id}', symbol={self.symbol}, color={self.color})>"
+
+    @classmethod
+    def add(cls, symbol):
+        """Adds new symbol."""
+
+        symbol = Symbol(symbol=symbol)
+
+        db.session.add(symbol)
+
+        return symbol
+
+
 class Users_Projects(db.Model):
     """Through table for user's projects."""
 
@@ -295,6 +324,17 @@ class PlantLists_Plants(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     plantlist_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
     plant_id = db.Column(db.Integer, db.ForeignKey("plants.id"))
+    symbol_id = db.Column(db.Integer, db.ForeignKey("symbols.id"))
+
+    symbol = db.relationship("Symbol", backref="plantlists_plants")
+    plant = db.relationship("Plant", backref="plantlists_plants")
+
+    def edit(self, plantlist_id, plant_id, symbol_id):
+        self.plantlist_id = plantlist_id or self.plantlist_id
+        self.plant_id = plant_id or self.plant_id
+        self.symbol_id = symbol_id or self.symbol_id
+        db.session.add(self)
+        db.session.commit()
 
 
 def connect_db(app):

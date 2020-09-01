@@ -1,4 +1,5 @@
 {% from 'macros.html' import macro_form %}
+{% from 'macros.html' import img_modal %}
 {% extends 'base.html' %}
 {% block content %}
 <div class="jumbotron jumbotron-fluid text-white" id="plantlist-show-jumbo">
@@ -81,17 +82,148 @@
 
 <div class="container">
 <h2>Plants</h2>
-<ul>
-    {% for plant in plantlist.plants %}
-    <li>
-       <a href="{{url_for('plant_profile', plant_slug = plant.slug)}}">{{plant.common_name}}</a> 
-    </li>
-    {% else %}
-    no plants
-    {% endfor %}
-</ul>
+
+<table class="table my-3 table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Common Name</th>
+            <th scope="col">Scientific Name</th>
+            <th scope="col">Family</th>
+            <th scope="col">Image</th>
+            <th scope="col">Custom Symbol</th>
+        </tr>
+    </thead>
+    <tbody ">
+
+        {% for plant in plantlist.plants %}
+        <tr>
+            <td>
+            {{plant['common_name']}}            
+            </td>
+            <td><a href="{{url_for('plant_profile', plant_slug=plant['slug'])}}"><i>{{plant['scientific_name']}}</i></a></td>
+            <td>{{plant['family']}}</td>
+            <td>
+            <!-- Thumbnail triggers img_modal -->
+            <a type="button" data-toggle="modal" data-target="#{{plant['slug']}}-modal">
+                <img id="table-plant-img" class="img-thumbnail" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
+            </a>
+            {{img_modal(plant)}}
+            </td>
+            <td>
+                <div class="containter custom-symbol-cont" data-plant-id="{{plant.id}}" data-plantlist-id="{{plantlist.id}}">
+                    {% if plant_symbol_map[plant.id] %}
+                    <div id="symbol-display" class="row justify-content-center fa-4x">
+                    {{plant_symbol_map[plant.id].symbol |safe}}
+
+                       
+    
+                    </div>
+                    <div id="change-symbol-btn" class="row justify-content-center">
+                        <h5><span class="badge badge-success edit-symbol open-symbol-modal" style="cursor: pointer;" data-toggle="modal" data-target="#symbolModal">Edit</span></h5>
 
 
+                    </div>
+
+
+                    {% else %}
+                    <div id="symbol-display" class="row justify-content-center">
+
+                    </div>
+                    <div id="change-symbol-btn" class="row justify-content-center">
+                        <button class="btn btn-success add-symbol open-symbol-modal"  data-toggle="modal" data-target="#symbolModal">Add symbol</button>    
+                    </div>
+                    {% endif %}
+                </div>
+
+            </td>
+            
+        </tr>
+        
+        {% endfor %}
+    </tbody>
+    </table>
+    {% if not plantlist.plants %}
+<h6 class="text-center">No plants added yet. Add plants by searching <a href="{{url_for('plants_search_table')}}">here</a>, selecting a plant, and adding from its profile page.</h5>    {% endif %}
+
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="symbolModal" tabindex="-1" role="dialog" aria-labelledby="symbolModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="symbolModalLabel">Choose a symbol, and pick a color for it.</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body pb-0">
+        <div class="row plant-symbol">
+            <div class="col">
+                <i class="symbol fas fa-carrot fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-pepper-hot fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-lemon fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol far fa-lemon fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-leaf fa-2x"></i>
+            </div>
+        </div>
+        <div class="row plant-symbol">
+            <div class="col">
+                <i class="symbol fas fa-apple-alt fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-seedling fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-spa fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fab fa-canadian-maple-leaf fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-tree fa-2x"></i>
+            </div>
+        </div>
+        <div class="row plant-symbol">
+            <div class="col">
+                <i class="symbol fab fa-pagelines fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-holly-berry fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-cannabis fa-2x"></i>
+            </div>
+            <div class="col">
+                <i class="symbol fas fa-fan fa-2x"></i>
+            </div>
+            <div class="col">
+                
+            </div>
+        </div>
+        <hr>
+        <div class="container d-flex justify-content-center fa-4x"  id="symbol-preview" style="color:#228B22;">
+            <i class="symbol fas fa-seedling" ></i>
+            </div>
+        <hr>
+    </div>
+    <div class="row px-4 pb-2 d-flex justify-content-between align-items-center">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input class="justify" type="color" name="symbol-color-input" id="symbol-color-input" value="#228B22">
+            <button id="create-symbol-btn" type="button" data-dismiss="modal" class="btn btn-primary">Create</button>
+    </div>
+    </div>
+</div>
 </div>
 
 
@@ -99,4 +231,6 @@
 {% block code %}
 <script src="/static/changeConnection.js"></script>
 <script src="/static/showSubform.js"></script>
+<script src="/static/plantSymbol.js"></script>
+
 {% endblock %}

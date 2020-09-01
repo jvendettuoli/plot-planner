@@ -18,6 +18,36 @@ from wtforms.validators import (
     NumberRange,
 )
 
+TREFLE_COLOR_CHOICES = [
+    ("white", "White"),
+    ("red", "Red"),
+    ("brown", "Brown"),
+    ("orange", "Orange"),
+    ("yellow", "Yellow"),
+    ("lime", "Lime"),
+    ("green", "Green"),
+    ("cyan", "Cyan"),
+    ("blue", "Blue"),
+    ("purple", "Purple"),
+    ("magenta", "Magenta"),
+    ("grey", "Grey"),
+    ("black", "Black"),
+]
+TREFLE_MONTH_CHOICES = [
+    ("jan", "JAN"),
+    ("feb", "FEB"),
+    ("mar", "MAR"),
+    ("apr", "APR"),
+    ("may", "MAY"),
+    ("jun", "JUN"),
+    ("jul", "JUL"),
+    ("aug", "AUG"),
+    ("sep", "SEP"),
+    ("oct", "OCT"),
+    ("nov", "NOV"),
+    ("dec", "DEC"),
+]
+
 
 class UserAddForm(FlaskForm):
     """Form for adding users."""
@@ -47,22 +77,53 @@ class PlantSearchForm(FlaskForm):
     """Form for searching plants."""
 
     search = StringField("Search", validators=[Optional()])
-    # edible_parts = SelectMultipleField(
-    #     "Edible Parts",
-    #     choices=[
-    #         ("roots", "Roots"),
-    #         ("stem", "Stem"),
-    #         ("leaves", "Leaves"),
-    #         ("flowers", "Flowers"),
-    #         ("fruits", "Fruits"),
-    #         ("seeds", "Seeds"),
-    #     ],
-    #     validators=[Optional()],
-    # )
-    edible_part = BooleanField(
-        "Only show plants some edible part?", validators=[Optional()]
+    edible_part = SelectMultipleField(
+        "Edible Parts",
+        choices=[
+            ("roots", "Roots"),
+            ("stem", "Stem"),
+            ("leaves", "Leaves"),
+            ("flowers", "Flowers"),
+            ("fruits", "Fruits"),
+            ("seeds", "Seeds"),
+            ("tubers", "Tubers"),
+        ],
+        validators=[Optional()],
     )
-    nitrogen_fixation = BooleanField("Nitrogen fixing?", validators=[Optional()])
+    flower_color = SelectMultipleField(
+        "Flower Color", choices=TREFLE_COLOR_CHOICES, validators=[Optional()],
+    )
+    growth_months = SelectMultipleField(
+        "Growth Months", choices=TREFLE_MONTH_CHOICES, validators=[Optional()],
+    )
+    bloom_months = SelectMultipleField(
+        "Bloom Months", choices=TREFLE_MONTH_CHOICES, validators=[Optional()],
+    )
+    fruit_months = SelectMultipleField(
+        "Fruit Months", choices=TREFLE_MONTH_CHOICES, validators=[Optional()],
+    )
+    ligneous_type = SelectMultipleField(
+        "Woody Plant Type",
+        choices=[
+            ("liana", "Liana"),
+            ("subshrub", "Subshrub"),
+            ("shrub", "Shrub"),
+            ("tree", "Tree"),
+            ("parasite", "Parasite"),
+        ],
+        validators=[Optional()],
+    )
+    duration = SelectMultipleField(
+        "Duration (life cycle)",
+        choices=[
+            ("annual", "Annual"),
+            ("biennial", "Biennial"),
+            ("perennial", "Perennial"),
+        ],
+        validators=[Optional()],
+    )
+    vegetable = BooleanField("Vegetable", validators=[Optional()])
+    evergreen = BooleanField("Evergreen", validators=[Optional()])
 
 
 class AddProjectForm(FlaskForm):

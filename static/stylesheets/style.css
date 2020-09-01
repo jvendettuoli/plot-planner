@@ -87,3 +87,22 @@
 	cursor: pointer;
 	color: lightseagreen;
 }
+
+#plant-profile-add-plant {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background-color: rgba(240, 240, 240, 0.85);
+	border: 2px solid rgba(230, 230, 230, 0.85);
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.row.plant-symbol {
+	margin: 10px;
+}
+
+#symbol-color-input {
+	width: 45px;
+	height: 45px;
+}

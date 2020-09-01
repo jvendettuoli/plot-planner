@@ -5,6 +5,7 @@ console.log('START plantSearch.js');
 //Cache common DOM elements
 const $plantForm = $('#plant-form');
 const $plantTableBody = $('#plant-table-body');
+const $noResults = $('#no-results');
 
 class Search {
 	constructor() {
@@ -60,7 +61,13 @@ class Search {
 			// console.log(await this.generatePlantRowHTML(plant));
 			plantTableData = plantTableData.concat(await this.generatePlantRowHTML(plant));
 		}
-		// console.log(plantTableData);
+
+		if (plantTableData.length === 0) {
+			$noResults.html('<h4 class="text-center my-3" style="width=100%">No results found.</h4>');
+		}
+		else {
+			$noResults.empty();
+		}
 		$plantTableBody.html(plantTableData);
 	}
 
@@ -93,7 +100,23 @@ $plantForm.submit(function(evt) {
 	console.log('Serialized', serializedInputs);
 
 	let inputsObj = serializedInputs.reduce((obj, item) => {
-		obj[item.name] = item.value;
+		obj[item.name] = obj[item.name] ? [ ...obj[item.name], item.value ] : [ item.value ];
+		// if (item.name in Object.keys(obj)) {
+		// 	console.log(item.name);
+		// 	if (Array.isArray(obj[item.name])) {
+		// 		console.log('in array');
+		// 		obj[item.name] = obj[item.name].push(item.value);
+		// 	}
+		// 	else {
+		// 		console.log('first go');
+		// 		obj[item.name] = [ obj[item.name], item.value ];
+		// 	}
+		// }
+		// else {
+		// 	console.log('skippy', item.name, item.value, obj);
+		// 	obj[item.name] = item.value;
+		// }
+
 		return obj;
 	}, {});
 	console.log('InputObj', inputsObj);

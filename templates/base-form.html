@@ -2,6 +2,16 @@
 
 {% for field in form if field.widget.input_type != 'hidden' %}
   <div class="form-group">
+    {% if field.type == 'BooleanField' %}
+    <div class="form-check">
+      
+      {{field(class_="form-check-input") }}
+      <label class="form-check-label">
+        <b>{{ field.label.text|safe }}</b>
+    </label>
+    </div>
+    
+    {% else %}
    <b>{{field.label}}</b>
     {{field(class_="form-control")}}
     {% for err in field.errors %}
@@ -9,5 +19,7 @@
         {{err}}
     </small>
   {% endfor %}
+  {% endif %}
+
 </div>
 {% endfor %}

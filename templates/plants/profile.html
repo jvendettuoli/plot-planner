@@ -3,36 +3,36 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container">
 
 <!-- Add Plant to Plant list -->
-<div class="container mt-3">
+<div id="plant-profile-add-plant" class="container-fluid">
 
-        {% if g.user  %}
-            {% if g.user.plantlists|length > 0  %}
-                {% if form.plantlists.choices|length > 0 %}
+    {% if g.user  %}
+        {% if g.user.plantlists|length > 0  %}
+            {% if form.plantlists.choices|length > 0 %}
 
-                <button class="btn btn-block btn-info" data-toggle="modal" data-target="#plantlistAddPlantModal" data-primary="plot" data-secondary="projects">Add Plant to Existing Plant List</button>
-                {% else %}
-                <div class="alert alert-success" role="alert">
-                Plant already added to all available plant lists.
-                </div>
-                {% endif %}
-
+            <button class="btn btn-block btn-info" data-toggle="modal" data-target="#plantlistAddPlantModal" data-primary="plot" data-secondary="projects">Add Plant to Existing Plant List</button>
             {% else %}
-
-            <div class="alert alert-info" role="alert">
-            You need to have at least one plant list created in order to save plants. Create one <a href="{{url_for('add_plantlists')}}">here!</a>
+            <div class="alert alert-success" role="alert">
+            Plant already added to all available plant lists.
             </div>
             {% endif %}
 
         {% else %}
+
         <div class="alert alert-info" role="alert">
-            You need to be logged in order to save a plant to a plant list. <a href="{{url_for('signup')}}">Signup</a> or <a href="{{url_for('login')}}">Login</a> to start creating your own projects!
-          </div>
+        You need to have at least one plant list created in order to save plants. Create one <a href="{{url_for('add_plantlists')}}">here!</a>
+        </div>
         {% endif %}
 
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        You need to be logged in order to save a plant to a plant list. <a href="{{url_for('signup')}}">Signup</a> or <a href="{{url_for('login')}}">Login</a> to start creating your own projects!
+      </div>
+    {% endif %}
+
 </div>
+<div class="container">
 
 <!-- Plant Info -->
 <div class="container my-3">
@@ -129,15 +129,45 @@
                   </tr>
                   <tr>
                     <th scope="row">Foliage</th>
-                    <td>
-                        {% for type, values in main_species['foliage'].items() %}
+                    <td>{% if main_species['foliage'] %}
+
+                            {% for type, values in main_species['foliage'].items() %}
+                            
+                            <b>{{type|replace('_',' ')|title}}</b>:
+                            {% if values and values != 'None' %}
+                                {% if values is iterable and values is not string %}
+                                    {{values|join(", ")|title}}
+                                {% else %}
+                                    {{values|title}}
+                                {% endif %}
+                            {% elif values == False %}
+                            False
+                            
+                            {% else %}
+                            <i>No data available.</i>
+                            
+                            {% endif %}
+                            <br>
+                            {% endfor %}
+                        {% else %}
+                        <i>No data available.</i>
+                        
+                        {% endif %}
+                        
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Fruit and Seed</th>
+                    <td>{% if main_species['fruit_or_seed'] %}
+
+                        {% for type, values in main_species['fruit_or_seed'].items() %}
                         
                         <b>{{type|replace('_',' ')|title}}</b>:
                         {% if values and values != 'None' %}
-                            {% if values is not string %}
-                            {{values|join(", ")|title}}
+                            {% if values is iterable and values is not string %}
+                                {{values|join(", ")|title}}
                             {% else %}
-                            {{values|title}}
+                                {{values|title}}
                             {% endif %}
                         {% elif values == False %}
                         False
@@ -148,16 +178,10 @@
                         {% endif %}
                         <br>
                         {% endfor %}
-                     
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Fruit and Seed</th>
-                    <td>{% if main_species['edible_part'] %}
-                        {{main_species['edible_part']|join(", ")|title}}
-                        {% else %}
-                        <i>No data available.</i>
-                        {% endif %}
+                    {% else %}
+                    <i>No data available.</i>
+                    
+                    {% endif %}
                     </td>
                   </tr>
                 </tbody>
@@ -219,17 +243,21 @@
             <div class="container" id="plant-distribution">
                 <table class="table">
                     <tbody>
-                    {% for type,locations in main_species['distribution'].items() %}
-                    <tr>
-                        <th scope="row">{{type|title}}</th>
-                        <td>{% if locations %}
-                            {{locations|join(', ')|title}}   
-                            {% else %}
+                        {% if main_species['distribution'] %}
+                            {% for type,locations in main_species['distribution'].items() %}
+                            <tr>
+                                <th scope="row">{{type|title}}</th>
+                                <td>{% if locations %}
+                                    {{locations|join(', ')|title}}   
+                                    {% else %}
+                                    <i>No data available.</i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
                             <i>No data available.</i>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -256,7 +284,21 @@
                         <th scope="row">{{type|replace('_',' ')|title}}</th>
                         <td>{% if values is mapping %}
                             {% for key, value in values.items() %}
-                            {{value}} {{key}}
+                                {% if value == 'None' or value == None %}
+                                    <i>No data available.</i>
+                                    <br>
+                                    {% else %}
+                                        {% if 'deg' in key %}
+                                    {{value}} &#176;{{key|replace('deg_f', 'F')|replace('deg_c', 'C')}} <br>
+                                        {% else %}
+                                        {{value}} {{key}}
+
+                                        {% endif %}
+
+                                    {% endif %}
+
+
+
                             {% endfor %}
                             {% elif values and values != 'None' %}
                             {{values}}
@@ -291,22 +333,20 @@
                     <tr>
                         <th scope="row">{{type|replace('_',' ')|title}}</th>
                         <td>{% if values is mapping %}
-                            {% for key, value in values.items() %}
-                                {% if value == 'None' or value == None %}
-                                <i>No data available.</i>
-                                <br>
-                                {% else %}
-                                    {% if 'deg' in key %}
-                                {{value}} &#176;{{key|replace('deg_f', 'F')|replace('deg_c', 'C')}} <br>
+                                {% for key, value in values.items() %}
+                                    {% if value == 'None' or value == None %}
+                                    <i>No data available.</i>
+                                    <br>
+                                    {% elif 'deg' in key %}
+                                        {{value}} &#176;{{key|replace('deg_f', 'F')|replace('deg_c', 'C')}} <br>
                                     {% else %}
-                                    {{value}} {{key}}
-
+                                        {{value}} {{key}}
                                     {% endif %}
-
-                                {% endif %}
-                            {% endfor %}
+                                {% endfor %}
+                            {% elif values is iterable and values is not string %}
+                                {{values|join(', ')|title}}
                             {% elif values and values != 'None' %}
-                            {{values}}
+                                {{values}}
                             {% else %}
                             <i>No data available.</i>
                             {% endif %}
@@ -379,6 +419,4 @@
     </div>
 {% endblock %}
 {% block code %}
-<!-- <script src="/static/addPlantToPlantlist.js"></script> -->
-
 {% endblock %}

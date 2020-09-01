@@ -11,12 +11,94 @@
 <div class="container">
 
 <div class="alert alert-light" role="alert">
-    <i class="fas fa-info-circle"></i>
-    Information found here is still being updated may having missing or inaccurate data. Sources are listed for each plant on its profile page and corrections can be made <a href="https://docs.trefle.io/docs/advanced/complete-data/">here</a>.
+    <div class="row">
+        <div class="col-1 justify-content-center">
+            <i class="fas fa-info-circle fa-3x"></i>
+        </div>
+        <div class="col">
+            Information found here is still being updated may having missing or inaccurate data. Sources are listed for each plant on its profile page and corrections can be made <a href="https://docs.trefle.io/docs/advanced/complete-data/">here</a>.
+        </div>
+    </div>
 </div>
+<hr>
 
-<form method="" id="plant-form">
-{% include 'base-form.html' %}
+<form id="plant-form">
+
+    <!-- <div class="form-group row">
+        {{form.search.label(class_="col-sm-2 col-form-label")}}
+        <div class="col-sm-10">
+        {{form.search(class_="form-control")}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <h5 class="text-center">Filter</h5>
+                {% for field in form if field.widget.input_type != 'hidden' %}
+                    {% if field.type == 'BooleanField' %}
+                    <div class="form-check">
+                    
+                    {{field(class_="form-check-input") }}
+                    <label class="form-check-label">
+                        
+                        {{ field.label.text|safe }}
+                        
+                    </label>
+                    </div>
+        
+                    {% endif %}
+                {% endfor %}
+
+
+            
+
+
+
+        </div>
+        <div class="col-6 border-left">
+            <h5 class="text-center">Sort</h5>
+
+
+
+
+
+        </div>
+
+
+
+
+
+    </div> -->
+
+
+
+
+
+    {{ form.hidden_tag() }}
+
+    {% for field in form if field.widget.input_type != 'hidden' %}
+      <div class="form-group">
+        {% if field.type == 'BooleanField' %}
+        <div class="form-check">
+          
+          {{field(class_="form-check-input") }}
+          <label class="form-check-label">
+            <b>{{ field.label.text|safe }}</b>
+        </label>
+        </div>
+        
+        {% else %}
+       <b>{{field.label}}</b>
+        {{field(class_="form-control")}}
+        {% for err in field.errors %}
+        <small class="form-text text-danger">
+            {{err}}
+        </small>
+      {% endfor %}
+      {% endif %}
+    
+    </div>
+    {% endfor %}
 <button class="btn btn-success btn-lg btn-block">Get Plants!</button>
 </form>
 
@@ -35,17 +117,15 @@
 {% for plant in plantlist %}
     <tr>
         <td>
-            {% if (plant['common_name'] and plant['common_name'] != 'None' and plant['common_name'] != 'null' and plant['common_name'] != null) %}
-                {{plant['common_name']}}
+            <!-- Despite success in other areas, I cannot seem to replace of the null value here -->
+            {% if (plant['common_name'] is not none and plant['common_name'] != null and plant['common_name'] != 'null' and plant['common_name'] != 'None') %}
+                {{plant['common_name']|replace('null', 'No data available')}}
             {% else %}
-                <i>No data available.</i> 
+                <i>No data available</i> 
             {% endif %}
             
-                   
-        
-        
         </td>
-        <td><a href="/plants/{{plant['slug']}}">{{plant['scientific_name']}}</a></td>
+        <td><a href="{{url_for('plant_profile', plant_slug=plant['slug'])}}"><i>{{plant['scientific_name']}}</i></a></td>
         <td>{{plant['family_common_name']}}</td>
         <td>
         <!-- Thumbnail triggers img_modal -->
@@ -61,6 +141,9 @@
 {% endfor %}
     </tbody>
 </table>
+<div id="no-results" class="container">
+
+</div>
 <nav aria-label="search results pagination">
     <ul class="pagination justify-content-center">
       <li id="page-first" class="page-item{% if not links.prev %} disabled{% endif %}">
@@ -76,7 +159,6 @@
       </li>
     </ul>
 </nav>
-{{links}}
 
 
 

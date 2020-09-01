@@ -37,18 +37,11 @@ class Pagination {
 	}
 
 	static async updateLinks(links) {
-		console.log(JSON.stringify(links));
-		const newPrevLink = links.prev;
-		console.log($pagePrevLink.attr('data-page'));
-		console.log(newPrevLink);
-		$pagePrevLink.attr('data-page', newPrevLink);
-		console.log($pagePrevLink.attr('data-page'));
-
-		console.log($pageNextLink.attr('data-page'));
-		console.log(links.next);
+		$pageFirstLink.attr('data-page', links.first);
+		$pagePrevLink.attr('data-page', links.prev);
 
 		$pageNextLink.attr('data-page', links.next);
-		console.log($pageNextLink.attr('data-page'));
+		$pageLastLink.attr('data-page', links.last);
 
 		if (!('next' in links)) {
 			$pageNextLink.parent('li').addClass('disabled');

@@ -17,4 +17,12 @@ class Query {
 
 		return res.data;
 	}
+
+	//GET request to get a single plantlist. Currently used for populating plantlist data on Plot Design
+	static async getPlantlistData(plantlistId) {
+		const res = await axios.get(`${this.baseUrl}/query/plantlist/${plantlistId}`);
+
+		console.log(res.data);
+		return res.data;
+	}
 }

@@ -1,6 +1,8 @@
 {% from 'macros.html' import macro_form %}
 {% extends 'base.html' %}
 {% block content %}
+
+<!-- Plot Jumbo -->
 <div class="jumbotron jumbotron-fluid text-white" id="plot-show-jumbo">
     <div class="container text-backdrop-dark">
         <div class="row pr-4 ">
@@ -25,9 +27,10 @@
     </div>
 </div>
 
-
+<!-- Connections -->
 <div class="container">
     <div class="row">
+        <!-- Connected Projects -->
         <div class="col-md-6 col-12 border-right">
             <h5>Connected Projects</h5>
                 <ul id="project-list">
@@ -40,6 +43,7 @@
             
 
         </div>   
+        <!-- Connected Plant Lists -->
         <div class="col-md-6 col-12">
             <h5>Connected Plant Lists</h5>
                 <ul id="plantlist-list">
@@ -52,6 +56,7 @@
                
         </div>   
     </div>
+    <!-- Show Buttons -->
     <div class="row align-items-bottom">
         <div class="col-6 ">
         <button id="toggle-projects-btn" type="button" data-toggle="modal" data-target="#project-modal" class="btn btn-block btn-outline-info ">Show/Hide Your Other Projects <i class="fas fa-caret-down"></i></button>
@@ -61,7 +66,7 @@
     </div>
     </div>
 </div>
-
+<!-- Add Forms -->
 <div class="container" data-plot-id="{{plot.id}}">
     <form class="mt-4" id="add-plantlists-form" style="display: none;">
         {{macro_form(form_plantlist)}}
@@ -79,6 +84,7 @@
 </div>
 <hr>
 
+<!-- Design -->
 <div class="container">
 <h2>Design</h2>
 <div class="container">
@@ -96,9 +102,35 @@
             {% endfor %}
             </div>
         </div>
+        <!-- Plant lists -->
         <div class="col">
             <h3>Plant List</h3>
-            
+
+            <label for="plantlists">Pick a Plant List:</label>
+
+            <select id="plantlist-select" class="form-control" name="plantlists" id="plantlists">
+                    <option value="" disabled selected>Select a plant list with at least one plant...</option>
+                {% for plantlist in plot.plantlists %}
+                    {% if plantlist.plants %}
+                    <option value="{{plantlist.id}}">{{plantlist.name}}</option>
+                    {% endif %}
+                {% endfor %}
+           
+            </select>
+            <p>Edit plant symbols at their respective Plant List page.</p>
+
+            <table id="plant-symbol-table" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Plant</th>
+                        <th scope="col" class="text-center">Symbol</th>
+                    </tr>
+                </thead>
+                <tbody>              
+                </tbody>
+
+            </table>
+
         </div>
     </div>
 </div>
@@ -112,4 +144,5 @@
 <script src="/static/changeConnection.js"></script>
 <script src="/static/showPlotSubform.js"></script>
 <script src="/static/plotDesign.js"></script>
+<script src="/static/query.js"></script>
 {% endblock %}
