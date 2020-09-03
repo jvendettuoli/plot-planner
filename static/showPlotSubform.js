@@ -53,6 +53,9 @@ $('ul').on('click', '.plot-rmv-plntlst-btn', function(evt) {
 	$li.remove();
 
 	$('#plantlists').append(generateOptionHTML(plantlistId, $li.text()));
+
+	//Remove the option from the Plot Design plantlist select
+	$plantlistSelect.children(`[value="${plantlistId}"]`).remove();
 });
 
 function generateLiHtml(element, plotId, elementId, elementName) {
@@ -88,7 +91,7 @@ $projectsForm.submit(function(evt) {
 	evt.preventDefault();
 
 	// const plantlistId = $(evt.currentTarget).parent().attr(dataAttrPlantListId);
-	const plotId = $(evt.currentTarget).parent().attr(dataAttrPlotId);
+	const plotId = $(evt.currentTarget).closest('.container').attr(dataAttrPlotId);
 	let serializedInputs = $(this).serializeArray();
 
 	// For each input, connect the project and plantlist, and update the Connected Projects list and Projects form to reflect the new connection.
@@ -110,7 +113,7 @@ $plantlistsForm.submit(function(evt) {
 	evt.preventDefault();
 	console.log('PLOTFORM');
 
-	const plotId = $(evt.currentTarget).parent().attr(dataAttrPlotId);
+	const plotId = $(evt.currentTarget).closest('.container').attr(dataAttrPlotId);
 
 	let serializedInputs = $(this).serializeArray();
 
@@ -125,6 +128,9 @@ $plantlistsForm.submit(function(evt) {
 			console.log(optionText);
 			$plantlistList.append(generateLiHtml('plantlist', plotId, element.value, optionText));
 			$(`option:selected[value='${element.value}']`).remove();
+
+			//remove from Plot Design Plantlist Select list
+			$plantlistSelect.append(generateOptionHTML(element.value, optionText));
 		}
 	});
 });

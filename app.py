@@ -38,6 +38,7 @@ from models import (
     Plant,
     Symbol,
     PlantLists_Plants,
+    Plot_Cells_Symbols,
 )
 from secret import TREFLE_API_KEY, FLASK_SECRET
 
@@ -793,6 +794,27 @@ def plot_add_plantlist(plot_id, plantlist_id):
     )
 
 
+@app.route(
+    "/plots/<int:plot_id>/add/symbol/<int:plantlists_plants_id>/x/<int:cell_x>/y/<int:cell_y>",
+    methods=["POST"],
+)
+def plot_cell_add_symbol(plot_id, plantlists_plants_id, cell_x, cell_y):
+    """Adds the plantlists_plants id to a plot cell, which effectively keeps the symbol updated even if changed via a plantlist"""
+
+    plot_cells_symbols = Plot_Cells_Symbols.add(
+        plot_id=plot_id,
+        plantlists_plants_id=plantlists_plants_id,
+        cell_x=cell_x,
+        cell_y=cell_y,
+    )
+    db.session.commit()
+
+    return (
+        f"Plantlists_Plants ID {plantlists_plants_id} added to plot cell {plot_cells_symbols} successfully.",
+        200,
+    )
+
+
 ###########################################################################
 # Plant Routes
 
@@ -927,19 +949,50 @@ def query_connections(primary_type, primary_id, secondary_type):
 
 @app.route("/query/plantlist/<int:plantlist_id>", methods=["GET"])
 def query_plantlist(plantlist_id):
+    """Returns plants from a plant list and a plant - symbol map. Currently used for generating plant - symbol lists for plot design."""
     plantlist = PlantList.query.get_or_404(plantlist_id)
     plantlist_plants = PlantLists_Plants.query.filter(
         PlantLists_Plants.plantlist_id == plantlist_id
     ).all()
 
-    plants = [plant.common_name for plant in plantlist.plants]
-
-    plant_symbol_map = {
-        item.plant.common_name: item.symbol.symbol
-        for item in plantlist_plants
-        if item.symbol
+    plantlist_plants_symbols = []
+    response = {
+        "plantlist_plants_symbols": plantlist_plants_symbols,
     }
-    return {"plants": plants, "plant_symbol_map": plant_symbol_map}
+    for item in plantlist_plants:
+        plant_data = {}
+        plant_data["plantlist_plants_id"] = item.id
+        plant_data["plant_id"] = item.plant.id
+        plant_data["plant_name"] = item.plant.common_name.capitalize()
+        plant_data["symbol"] = item.symbol.symbol
+        plantlist_plants_symbols.append(plant_data)
+
+    return response
+
+
+@app.route("/query/plot_cells/<int:plot_id>", methods=["GET"])
+def query_plot_cells(plot_id):
+    """Returns plants from a plant list and a plant - symbol map. Currently used for generating plant - symbol lists for plot design."""
+    plot_cells_symbols = Plot_Cells_Symbols.query.filter(
+        Plot_Cells_Symbols.plot_id == plot_id
+    ).all()
+
+    print("PLOTCELLSSYM", plot_cells_symbols)
+
+    cells_symbols = []
+
+    for item in plot_cells_symbols:
+        plantlists_plants = PlantLists_Plants.query.get_or_404(
+            item.plantlists_plants_id
+        )
+        symbol = plantlists_plants.symbol.symbol
+        cell = {}
+        cell["cell_x"] = item.cell_x
+        cell["cell_y"] = item.cell_y
+        cell["symbol"] = symbol
+        cells_symbols.append(cell)
+
+    return jsonify(cells_symbols)
 
 
 ##############################################################################

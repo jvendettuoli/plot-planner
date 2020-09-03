@@ -67,20 +67,28 @@
     </div>
 </div>
 <!-- Add Forms -->
-<div class="container" data-plot-id="{{plot.id}}">
-    <form class="mt-4" id="add-plantlists-form" style="display: none;">
-        {{macro_form(form_plantlist)}}
-        <button class="btn btn-block btn-info">Add Selected Plant Lists to Plot</button>
-    </form>
-    <form class="mt-4" id="add-projects-form" style="display: none;">
-        {{macro_form(form_project)}}
-        <div class="row">
-
-            <div class="col">
-                <button  class="btn btn-block btn-info">Add Selected Projects to Plot</button>
-            </div>
+<div id="add-forms" class="container" data-plot-id="{{plot.id}}">
+    <div class="row">
+        <!--Projects Form -->
+        <div class="col-6">
+            <form class="mt-4" id="add-projects-form" style="display: none;">
+                {{macro_form(form_project)}}
+                <div class="row">
+                    <div class="col">
+                        <button  class="btn btn-block btn-info">Add Selected Projects to Plot</button>
+                    </div>
+                </div>
+            </form>
+          
         </div>
-    </form>
+        <!-- Plant lists Form -->
+        <div class="col-6">
+            <form class="mt-4" id="add-plantlists-form" style="display: none;">
+                {{macro_form(form_plantlist)}}
+                <button class="btn btn-block btn-info">Add Selected Plant Lists to Plot</button>
+            </form>
+        </div>
+    </div>
 </div>
 <hr>
 
@@ -90,12 +98,40 @@
 <div class="container">
     <div class="row">
         <div class="col">
+            <button id="select-all-btn" class="btn btn-info">Select All</button>
+            <button id="deselect-all-btn" class="btn btn-info">Deselect All</button>
+            <button id="clear-all-btn" class="btn btn-warning">Clear All</button>
+            <hr>
             <div class="container plot-design">
             {% for row in range(plot.length) %}
+                {% if loop.index == 1 %}
+                <div class="row d-flex justify-content-around">
+
+                    {% for col in range(plot.width +1) %}
+                        {% if loop.index == 1 %}
+                        <div class="col"></div>
+
+                        {% else %}
+
+                        <div  data-col="{{col-1}}" class="col select-col add">
+                        <i class="fas fa-chevron-down"></i>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                {% endif %}
+
+
                 <div class="row justify-content-center plot-row">
                     {% for col in range(plot.width) %}
-                    <div class="col plot-col" data-row="{{row}}" data-col="{{col}}">
-                        <i class="fas fa-seedling "></i>
+                    {% if loop.index == 1 %}
+                        <div class="col select-row add">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="col plot-col fa-lg justify-content-center d-flex align-items-center" data-row="{{row}}" data-col="{{col}}">
                     </div>
                     {% endfor %}
                 </div>
@@ -106,10 +142,10 @@
         <div class="col">
             <h3>Plant List</h3>
 
-            <label for="plantlists">Pick a Plant List:</label>
+            <label for="plantlists">Pick from connected Plant Lists (list must have at least one plant).</label>
 
             <select id="plantlist-select" class="form-control" name="plantlists" id="plantlists">
-                    <option value="" disabled selected>Select a plant list with at least one plant...</option>
+                    <option value="" disabled selected>Select a plant list...</option>
                 {% for plantlist in plot.plantlists %}
                     {% if plantlist.plants %}
                     <option value="{{plantlist.id}}">{{plantlist.name}}</option>
@@ -141,8 +177,8 @@
 
 {% endblock %}
 {% block code %}
+<script src="/static/query.js"></script>
 <script src="/static/changeConnection.js"></script>
 <script src="/static/showPlotSubform.js"></script>
 <script src="/static/plotDesign.js"></script>
-<script src="/static/query.js"></script>
 {% endblock %}

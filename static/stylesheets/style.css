@@ -64,19 +64,29 @@
 }
 
 .plot-design {
-	border: cyan 2px dotted;
 }
 .plot-row {
 	height: 50px;
-	border: red 1px solid;
 }
 .plot-col {
 	max-width: 50px;
-	border: blue 1px solid;
+	border: brown 2px solid;
+	background-color: rgba(216, 115, 0, 0.575);
 }
 
 .plot-col:hover {
-	background-color: gold;
+	background-color: turquoise;
+}
+
+.col.add {
+	background-color: rgba(0, 255, 85, 0.644);
+}
+.col.remove {
+	background-color: rgba(255, 0, 0, 0.644);
+}
+
+.selected {
+	background-color: lightskyblue;
 }
 
 .plant-profile-pic {
@@ -100,6 +110,15 @@
 
 .row.plant-symbol {
 	margin: 10px;
+}
+
+.select-col {
+	display: inline-block;
+	border: 1px yellow solid;
+	max-width: 50px;
+}
+.select-row {
+	border: 1px yellow solid;
 }
 
 #symbol-color-input {

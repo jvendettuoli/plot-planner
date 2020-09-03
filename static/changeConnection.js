@@ -36,4 +36,10 @@ class Connection {
 	static async projectAddPlot(projectId, plotId) {
 		const res = await axios.post(`${this.baseUrl}/projects/${projectId}/add/plot/${plotId}`);
 	}
+	//POST request to add symbol to a plot cell
+	static async plotCellAddSymbol(plotId, cellX, cellY, plantlistsPlantsId) {
+		const res = await axios.post(
+			`${this.baseUrl}/plots/${plotId}/add/symbol/${plantlistsPlantsId}/x/${cellX}/y/${cellY}`
+		);
+	}
 }

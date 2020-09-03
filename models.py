@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 default_plant_pic = "/static/images/default-pic.png"
+default_plant_symbol = "<i class='symbol fas fa-seedling' style='color:#228B22;'></i>"
 
 
 class Plant(db.Model):
@@ -239,7 +240,7 @@ class Symbol(db.Model):
     __tablename__ = "symbols"
 
     id = db.Column(db.Integer, primary_key=True)
-    symbol = db.Column(db.Text, nullable=False)
+    symbol = db.Column(db.Text, nullable=False, default=default_plant_symbol)
 
     def __repr__(self):
         return f"<Symbol(id={self.id})>"
@@ -316,15 +317,46 @@ class Plots_PlantLists(db.Model):
     plantlist_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
 
 
+class Plot_Cells_Symbols(db.Model):
+    """Plot cell and plant symbol map."""
+
+    __tablename__ = "plot_cells_symbols"
+
+    id = db.Column(db.Integer, primary_key=True)
+    plot_id = db.Column(db.Integer, db.ForeignKey("plots.id"), nullable=False,)
+    cell_x = db.Column(db.Integer, nullable=False,)
+    cell_y = db.Column(db.Integer, nullable=False,)
+    plantlists_plants_id = db.Column(
+        db.Integer, db.ForeignKey("plantlists_plants.id"), nullable=False,
+    )
+
+    @classmethod
+    def add(
+        cls, plot_id, cell_x, cell_y, plantlists_plants_id,
+    ):
+        """Adds new plot for user."""
+
+        plot_cells_symbols = Plot_Cells_Symbols(
+            plot_id=plot_id,
+            plantlists_plants_id=plantlists_plants_id,
+            cell_x=cell_x,
+            cell_y=cell_y,
+        )
+
+        db.session.add(plot_cells_symbols)
+
+        return plot_cells_symbols
+
+
 class PlantLists_Plants(db.Model):
-    """Through table for plant lists's plants."""
+    """Through table for plant lists's plants. Also handles specific symbol for a plant, for each plantlist."""
 
     __tablename__ = "plantlists_plants"
 
     id = db.Column(db.Integer, primary_key=True)
     plantlist_id = db.Column(db.Integer, db.ForeignKey("plantlists.id"))
     plant_id = db.Column(db.Integer, db.ForeignKey("plants.id"))
-    symbol_id = db.Column(db.Integer, db.ForeignKey("symbols.id"))
+    symbol_id = db.Column(db.Integer, db.ForeignKey("symbols.id"), default=1)
 
     symbol = db.relationship("Symbol", backref="plantlists_plants")
     plant = db.relationship("Plant", backref="plantlists_plants")
