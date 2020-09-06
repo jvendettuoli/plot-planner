@@ -3,7 +3,7 @@
 
 <div class="container mt-4">
     <h1>Edit {{plantlist.name}}</h1>
-    <p>Editing the plant list details will not affect which plants are associated with it. As usual you can add plants to it by searching <a href="{{url_for('plants_search_table')}}">searching plants</a>, and adding them from the plant profile.</p>
+    <p class="lead">Editing the plant list details will not affect which plants are associated with it. As usual you can add plants to it by searching <a href="{{url_for('plants_search_table')}}">searching plants</a>, and adding them from the plant profile.</p>
 
     <form method="POST">
     {% include 'base-form.html' %}

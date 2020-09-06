@@ -14,10 +14,10 @@ class Search {
 	}
 	//Change out based on deployment
 	static baseUrl = 'http://127.0.0.1:5000';
-	static defaultImg = '/static/images/default-pic.png';
+	static defaultPlantImg = '/static/images/default-plant-pic.png';
 
 	static async extractPlantData(item) {
-		const imageUrl = item.image_url || this.defaultImg;
+		const imageUrl = item.image_url || this.defaultPlantImg;
 
 		return {
 			commonName       : item.common_name,
@@ -49,17 +49,31 @@ class Search {
             <td>${plant.commonName}</td>
             <td><a href="/plants/${plant.slug}">${plant.scientificName}</a></td>
             <td>${plant.familyCommonName}</td>
-            <td><img width="100" height="100" src="${plant.imageUrl}" alt="${plant.commonName} image"></td>
+			<td>
+			<a type="button" data-toggle="modal" data-target="#${plant.slug}-modal">
+            <img id="table-plant-img" class="img-thumbnail" src="${plant.imageUrl}" alt="${plant.commonName} image">
+			</a>
+			</td>
         </tr>`;
+	}
+
+	static async generatePlantImgModal(plant) {
+		return `
+		<div class="modal fade" id="${plant.slug}-modal" tabindex="-1" aria-labelledby="${plant.slug}-modal-label" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<img src="${plant.imageUrl}" alt="${plant.commonName} image">
+				</div>
+			</div>
+		</div>`;
 	}
 
 	static async populateTable(plantList) {
 		console.log('IN Populate');
 		let plantTableData = '';
 		for (let plant of plantList) {
-			// console.log(plant);
-			// console.log(await this.generatePlantRowHTML(plant));
 			plantTableData = plantTableData.concat(await this.generatePlantRowHTML(plant));
+			$('body').append(await this.generatePlantImgModal(plant));
 		}
 
 		if (plantTableData.length === 0) {
@@ -101,21 +115,6 @@ $plantForm.submit(function(evt) {
 
 	let inputsObj = serializedInputs.reduce((obj, item) => {
 		obj[item.name] = obj[item.name] ? [ ...obj[item.name], item.value ] : [ item.value ];
-		// if (item.name in Object.keys(obj)) {
-		// 	console.log(item.name);
-		// 	if (Array.isArray(obj[item.name])) {
-		// 		console.log('in array');
-		// 		obj[item.name] = obj[item.name].push(item.value);
-		// 	}
-		// 	else {
-		// 		console.log('first go');
-		// 		obj[item.name] = [ obj[item.name], item.value ];
-		// 	}
-		// }
-		// else {
-		// 	console.log('skippy', item.name, item.value, obj);
-		// 	obj[item.name] = item.value;
-		// }
 
 		return obj;
 	}, {});

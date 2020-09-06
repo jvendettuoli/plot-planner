@@ -3,12 +3,12 @@
 console.log('START plotDesign.js');
 
 const plotId = $('#add-forms').attr('data-plot-id');
-const $plotContainer = $('.plot-design');
+const $plotContainer = $('.plot-cont');
 const $plotCols = $('.plot-col');
 const $plotRows = $('.plot-row');
 const $selectAllBtn = $('#select-all-btn');
 const $deselectAllBtn = $('#deselect-all-btn');
-const $clearAllBtn = $('#clear-all-btn');
+const $clearSelectedBtn = $('#clear-selected-btn');
 const $rowSelects = $('.select-row');
 const $colSelects = $('.select-col');
 
@@ -79,12 +79,17 @@ $selectAllBtn.on('click', function(evt) {
 	$rowSelects.removeClass('add');
 	$rowSelects.addClass('remove');
 });
-$clearAllBtn.on('click', function(evt) {
-	console.log($plotCols);
+$clearSelectedBtn.on('click', async function(evt) {
+	console.log($plotCols.filter('.selected'));
 
-	for (const cell of $plotCols) {
+	for (const cell of $plotCols.filter('.selected')) {
 		const $cell = $(cell);
-		$cell.empty();
+		if ($cell.html().includes('symbol')) {
+			$cell.empty();
+			const cellX = $cell.attr('data-col');
+			const cellY = $cell.attr('data-row');
+			await Connection.plotCellDeleteSymbol(plotId, cellX, cellY);
+		}
 	}
 });
 

@@ -88,7 +88,7 @@ $plotsForm.submit(function(evt) {
 	evt.preventDefault();
 
 	// const plantlistId = $(evt.currentTarget).parent().attr(dataAttrPlantListId);
-	const projectId = $(evt.currentTarget).parent().attr(dataAttrProjectId);
+	const projectId = $(evt.currentTarget).closest('[data-project-id]').attr(dataAttrProjectId);
 	let serializedInputs = $(this).serializeArray();
 
 	// For each input, connect the project and plots, and update the Connected plots list and plots form to reflect the new connection.
@@ -110,7 +110,7 @@ $plantlistsForm.submit(function(evt) {
 	evt.preventDefault();
 	console.log('PLOTFORM');
 
-	const projectId = $(evt.currentTarget).parent().attr(dataAttrProjectId);
+	const projectId = $(evt.currentTarget).closest('[data-project-id]').attr(dataAttrProjectId);
 
 	let serializedInputs = $(this).serializeArray();
 

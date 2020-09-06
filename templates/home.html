@@ -1,38 +1,51 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- <img class="image-fluid" src="static/images/homepage-garden.jpg" alt="Photo by Markus Spiske on Unsplash"> -->
-<div class="container">
-    <div class="jumbotron">
-        <h1 class="display-4">Welcome to Plot Planner!</h1>
-        <p class="lead"><a href="{{url_for('signup')}}">Signup</a> or <a href="{{url_for('login')}}">login</a> to start planning your garden plots, or jump right into browsing plants and signup later!</p>
-        <hr class="my-4">
-        <p>If you would like a brief overview of how this site works, click below.</p>
-        <p class="lead">
-          <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-        </p>
-    </div>
-    <div class="row">
-        <div class="col" >
-            <div class="card bg-dark text-black">
-                <img class="card-img" src="/static/images/homepage-garden.jpg" alt="Card image" >
-                <div class="card-img-overlay">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card bg-dark text-white">
-                <img class="card-img" src="/static/images/homepage-garden.jpg" alt="Card image">
-                <div class="card-img-overlay">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
+<div id=home-main-cont class="container-fluid p-0">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col">
+            <div id="home-jumbo" class="jumbotron jumbotron-fluid text-white">
+                <div class="container text-backdrop-dark text-center">
+                    <h1 class="display-4">Welcome to Plot Planner</h1>
+                    <p class="lead font-weight-bold"><a href="{{url_for('signup')}}">Signup</a> or <a href="{{url_for('login')}}">login</a> to start planning your garden plots, or jump right into <a href="{{url_for('plants_search_table')}}">browsing plants</a> and signup later!</p>
+                    <hr class="my-4" style="background-color: white;">
+                    <p class="lead font-weight-bold">For a brief overview of how this site works, click below.</p>
+                    <p class="lead">
+                        <a class="btn btn-success btn-lg" href="{{url_for('about')}}" role="button">Learn more</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <div id="home-cards" class="row">
+        <div class="col-1"></div>
+        <div class="col d-flex justify-content-center" >
+            <div class="card" style="width: 18rem;">
+                <div class="card-body text-backdrop-dark pb-2 text-white">
+                    <h5 class="card-title display-4">Search <i class="fas fa-search"></i></h5>
+                    <h6 class="card-subtitle mb-2 text-white">Find the Right Plants</h6>
+                    <p class="card-text mb-1 pb-1 border-bottom">Search through over 1 million plants to find the perfect match to suit your needs.</p>
+                    <a href="{{url_for('plants_search_table')}}" class="text-center card-link">Search Plants</a>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex justify-content-center">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body text-backdrop-dark text-white">
+                    <h5 class="card-title display-4">Design <i class="fas fa-pencil-ruler"></i></h5>
+                    <h6 class="card-subtitle mb-2 text-white">Bring Your Ideas to Life</h6>
+                    <p class="card-text mb-1 pb-1 border-bottom">Create Project, Plots, and Plant Lists to help organize and plan out your next planting endeavour.</p>
+                    {% if g.user %}
+                    <a href="{{url_for('add_projects')}}">Projects</a> | 
+                    <a href="{{url_for('add_plots')}}">Plots</a> | 
+                    <a href="{{url_for('add_plantlists')}}">Plant Lists</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
 </div>
 {% endblock %}

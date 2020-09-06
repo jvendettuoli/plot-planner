@@ -3,11 +3,10 @@
   <div class="modal fade" id="{{plant['slug']}}-modal" tabindex="-1" aria-labelledby="{{plant['slug']}}-modal-label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <img id= class="img-thumbnail" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
+        <img src="{% if plant['image_url'] == None %}/static/images/default-plant-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
       </div>
     </div>
   </div>
-</div>
 {% endmacro %}
 
 {% macro add_connection_modal(plant) %}
@@ -78,4 +77,19 @@
   {% else %}
     <i>No data available.</i> 
   {% endif %}
+{% endmacro %} 
+
+
+<!-- Macro to display plot in view style -->
+{% macro plot_viewer(plot) %}
+<div id="plot-viewer-cont" class="container plot-cont plot-viewer">
+  {% for row in range(plot.length) %}
+      <div class="plot-viewer row d-flex justify-content-center plot-row">
+          {% for col in range(plot.width) %}
+          <div class="plot-viewer col plot-col fa-2x justify-content-center d-flex align-items-center" data-row="{{row}}" data-col="{{col}}">
+          </div>
+          {% endfor %}
+      </div>
+  {% endfor %}
+</div>
 {% endmacro %} 

@@ -1,9 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Signup</h1>
-<p>Create an account to be able to save projects, plot designs, and plant lists you create.</p>
-<form method="POST">
-{% include 'base-form.html' %}
-<button class="btn btn-primary btn-lg btn-block">Start Planning!</button>
-</form>
+
+
+
+<div class="container my-3">
+    <div class="row">
+        <div class="col-2">
+        </div>
+        <div class="col">
+            <h1 class="display-4">Signup</h1>
+            <p class="lead">Create an account to be able to save projects, plot designs, and plant lists you create.</p>
+            <form class="form-group" method="POST">
+            {% include 'base-form.html' %}
+            <button class="btn btn-primary btn-lg btn-block">Start Planning!</button>
+            </form>
+       
+        </div>
+        <div class="col-2">
+        </div>
+    </div>
+</div
+
+
+
+
+
+
+
+
 {% endblock %}

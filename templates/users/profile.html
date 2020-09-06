@@ -1,35 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-<h1>User Profile</h1>
+<div id="user-profile" class="container">
     <div class="row">
-        <div class="col-2">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">My Projects</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">My Plots</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">My Plant Lists</a>
-                </li>
-         
-            </ul>
+        <div class="col-3">
         </div>
         <div class="col">
-            <img src="{{user.image_url}}" alt="user profile image" width="200">
-            
-            <!-- <p class="text">ID: {{user.id}}</p> -->
-            <p class="text">Welcome, {{user.username}}!</p>
-            <a class="btn btn-primary" href="{{url_for('edit_user')}}">Edit Profile</a>
-            <!-- <a class="btn btn-danger" href="{{url_for('delete_user')}}">Delete Profile</a> -->
-            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-modal">
-                Delete User
-              </button>
-
-
-            
+            <h1 class="display-4">User Profile</h1>
+            <div class="d-flex justify-content-center">
+                <img src="{{user.image_url}}" alt="user profile image" width="200">
+            </div>
+            <p class="lead my-3">Welcome, {{user.username}}! You can edit your profile details, or delete your account here.</p>
+            <div class="d-flex justify-content-around">
+                <a class="btn btn-primary" href="{{url_for('edit_user')}}">Edit Profile</a>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-modal">
+                    Delete User
+                </button>
+            </div>
+        </div>
+        <div class="col-3">
         </div>
     </div>
 </div>
@@ -48,7 +36,7 @@
           </button>
         </div>
         <div class="modal-body">
-          Are you sure you want to delete your user profile? You will lose access to any projects, plots, and plant lists you have created that are not already public.
+          Are you sure you want to delete your user profile? You will lose access to any projects, plots, and plant lists you have created.
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

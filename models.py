@@ -147,7 +147,7 @@ class Project(db.Model):
 
         return project
 
-    def edit(self, name, description, is_public):
+    def edit(self, name, description, is_public=False):
         """Edit plantlist information"""
         self.name = name or self.name
         self.description = description or self.description
@@ -180,7 +180,7 @@ class PlantList(db.Model):
 
         return plantlist
 
-    def edit(self, name, description, is_public):
+    def edit(self, name, description, is_public=False):
         """Edit plantlist information"""
         self.name = name or self.name
         self.description = description or self.description
@@ -223,7 +223,7 @@ class Plot(db.Model):
 
         return plot
 
-    def edit(self, name, description, width, length, is_public):
+    def edit(self, name, description, width, length, is_public=False):
         """Edit plot information"""
         self.name = name or self.name
         self.description = description or self.description

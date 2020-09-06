@@ -14,6 +14,7 @@
 
 <body class="{% block body_class %}{% endblock %}">
 
+<!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success">
   <a class="navbar-brand" href="{{url_for('homepage')}}"><i class="fas fa-seedling mr-2"></i>Plot Planner</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,13 +23,14 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
- 
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('about')}}">About</a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('plants_search_table')}}">Search Plants</a>
       </li>
-
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle {% if not g.user %} disabled {% endif %}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Create
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -40,8 +42,6 @@
       <li class="nav-item">
         <a class="nav-link {% if not g.user %} disabled {% endif %}" href="{% if not g.user %}#{% else %}{{url_for('user_content', user_id=g.user.id)}}{% endif %}">My Content</a>
       </li>
-
-
     </ul>
     <ul class="navbar-nav justify-content-end">
 
@@ -52,7 +52,6 @@
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('signup')}}">Signup</a>
       </li>
-  
     {% else %}
    
       <li class="nav-item dropdown">
@@ -61,13 +60,6 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="{{url_for('user_profile',user_id=g.user.id)}}">Profile</a>
-              <div class="dropdown-divider"></div>
-              <!--{# <a class="dropdown-item" href="{{url_for('show_projects',user_id=g.user.id)}}">My Projects</a>
-              <a class="dropdown-item" href="/plots">My Plots</a>
-              <a class="dropdown-item" href="/plantlists">My Plant Lists
-              </a> #} -->
-              <a class="dropdown-item" href="{{url_for('user_content', user_id=g.user.id)}}">My Content</a> 
-             
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{{url_for('logout')}}">Logout</a>
           </div>

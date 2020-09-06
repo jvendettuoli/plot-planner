@@ -9,7 +9,7 @@
     </div>
 </div>
 <div class="container">
-
+<!-- Informational alert -->
 <div class="alert alert-light" role="alert">
     <div class="row">
         <div class="col-1 justify-content-center">
@@ -22,88 +22,54 @@
 </div>
 <hr>
 
+<!-- Search Form -->
 <form id="plant-form">
-
-    <!-- <div class="form-group row">
-        {{form.search.label(class_="col-sm-2 col-form-label")}}
+    {{ form.hidden_tag() }}
+    <!-- Search Bar -->
+    <div class="form-group row mt-4">
+        <b>{{form.search.label(class_="col-sm-2 col-form-label")}}</b>
         <div class="col-sm-10">
         {{form.search(class_="form-control")}}
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-6">
-            <h5 class="text-center">Filter</h5>
-                {% for field in form if field.widget.input_type != 'hidden' %}
-                    {% if field.type == 'BooleanField' %}
-                    <div class="form-check">
-                    
-                    {{field(class_="form-check-input") }}
-                    <label class="form-check-label">
-                        
-                        {{ field.label.text|safe }}
-                        
-                    </label>
-                    </div>
-        
-                    {% endif %}
+    <!-- Show Filters Button -->
+    <button class="btn btn-info my-2" type="button" data-toggle="collapse" data-target="#filtersCollapse" aria-expanded="false" aria-controls="filtersCollapse">
+        Show Filters
+      </button>
+    <!-- Filter Fields -->
+    <div class="container collapse" id="filtersCollapse">
+        <div class="row my-1"><small>To select multiple options of the same search filter, hold CTRL and click the desired options. To remove a selected option hold CTRL and click on the selected option.</small></div>
+        <div class="row">
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            {% if field.type == 'SelectMultipleField' %}
+            <div class="col-3 p-2">
+                <b>{{field.label}}</b>
+                {% for err in field.errors %}
+                    <small class="form-text text-danger">
+                        {{err}}
+                    </small>
                 {% endfor %}
-
-
-            
-
-
-
+                {{field(class_="form-control")}}                
+            </div>
+            {% endif %}
+        {% endfor %}
+            <div class="col-3">
+                <div class="form-check mt-5">
+                    {{form.vegetable(class_="form-check-input") }}
+                    <b><label for="vegetable" class="form-check-label">{{ form.vegetable.label.text|safe }}</label></b>
+                </div>
+                <div  class="form-check mt-3">
+                    {{form.evergreen(class_="form-check-input") }}
+                    <b><label for="evergreen" class="form-check-label">{{ form.evergreen.label.text|safe }}</label></b>
+                </div>
+            </div>
         </div>
-        <div class="col-6 border-left">
-            <h5 class="text-center">Sort</h5>
-
-
-
-
-
-        </div>
-
-
-
-
-
-    </div> -->
-
-
-
-
-
-    {{ form.hidden_tag() }}
-
-    {% for field in form if field.widget.input_type != 'hidden' %}
-      <div class="form-group">
-        {% if field.type == 'BooleanField' %}
-        <div class="form-check">
-          
-          {{field(class_="form-check-input") }}
-          <label class="form-check-label">
-            <b>{{ field.label.text|safe }}</b>
-        </label>
-        </div>
-        
-        {% else %}
-       <b>{{field.label}}</b>
-        {{field(class_="form-control")}}
-        {% for err in field.errors %}
-        <small class="form-text text-danger">
-            {{err}}
-        </small>
-      {% endfor %}
-      {% endif %}
-    
     </div>
-    {% endfor %}
-<button class="btn btn-success btn-lg btn-block">Get Plants!</button>
+<button class="btn btn-success btn-lg btn-block my-3">Search Plants</button>
 </form>
 
-
-<table id="plant-table" class="table my-3 table-hover">
+<!-- Search Results Table -->
+<table id="plant-table" class="table table-striped my-3 table-hover">
     <thead>
         <tr>
             <th scope="col">Common Name</th>
@@ -114,7 +80,7 @@
     </thead>
     <tbody id="plant-table-body">
 
-{% for plant in plantlist %}
+    {% for plant in plantlist %}
     <tr>
         <td>
             <!-- Despite success in other areas, I cannot seem to replace of the null value here -->
@@ -130,20 +96,20 @@
         <td>
         <!-- Thumbnail triggers img_modal -->
         <a type="button" data-toggle="modal" data-target="#{{plant['slug']}}-modal">
-            <img id="table-plant-img" class="img-thumbnail" src="{% if plant['image_url'] == None %}/static/images/default-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
+            <img id="table-plant-img" class="img-thumbnail" src="{% if plant['image_url'] == None %}/static/images/default-plant-pic.png{% else %}{{plant['image_url']}}{% endif %}" alt="{{plant['common_name']}} image">
         </a>
         </td>
+        <!-- Creates image modal connected to plant image thumbnails -->
         {{img_modal(plant)}}
-
-
-
     </tr>
-{% endfor %}
+    {% endfor %}
     </tbody>
 </table>
-<div id="no-results" class="container">
 
+<div id="no-results" class="container">
 </div>
+
+<!-- Pagination -->
 <nav aria-label="search results pagination">
     <ul class="pagination justify-content-center">
       <li id="page-first" class="page-item{% if not links.prev %} disabled{% endif %}">

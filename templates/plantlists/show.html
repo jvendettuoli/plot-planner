@@ -26,9 +26,11 @@
     </div>
 </div>
 
-
+<!-- Connections -->
 <div class="container">
+    <h2 class="text-center">Connections</h2>
     <div class="row">
+        <p class="lead">Add and Remove connections, or easily visit other created content by clicking on the links of connected content.</p>
         <div class="col-md-6 col-12 border-right">
             <h5>Connected Projects</h5>
                 <ul id="project-list">
@@ -53,6 +55,7 @@
                
         </div>   
     </div>
+    <!-- Show Form Buttons -->
     <div class="row align-items-bottom">
         <div class="col-6 ">
         <button id="toggle-projects-btn" type="button" data-toggle="modal" data-target="#project-modal" class="btn btn-block btn-outline-info ">Show/Hide Your Other Projects <i class="fas fa-caret-down"></i></button>
@@ -62,27 +65,36 @@
     </div>
     </div>
 </div>
-
+<!-- Add Forms -->
 <div class="container" data-plantlist-id="{{plantlist.id}}">
-    <form class="mt-4" id="add-plots-form" style="display: none;">
-        {{macro_form(form_plot)}}
-        <button class="btn btn-block btn-info">Add Selected Plots to Plant List</button>
-    </form>
-    <form class="mt-4" id="add-projects-form" style="display: none;">
-        {{macro_form(form_project)}}
-        <div class="row">
+    <div class="row">
+        <!-- Projects -->
+        <div class="col-6">
+            <form class="mt-4" id="add-projects-form" style="display: none;">
+                {{macro_form(form_project)}}
+                <div class="row">
 
-            <div class="col">
-                <button  class="btn btn-block btn-info">Add Selected Projects to Plant List</button>
-            </div>
+                    <div class="col">
+                        <button  class="btn btn-block btn-info">Add Selected Projects to Plant List</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+         <!-- Plots -->
+         <div class="col-6">
+            <form class="mt-4" id="add-plots-form" style="display: none;">
+                {{macro_form(form_plot)}}
+                <button class="btn btn-block btn-info">Add Selected Plots to Plant List</button>
+            </form>
+        </div>
+    </div>
 </div>
 <hr>
 
-<div class="container">
-<h2>Plants</h2>
-
+<!-- Plant List -->
+<div class="container mt-5">
+<h2 class="text-center">Plants</h2>
+<p class="lead">View the plants that have added to this list, and assign them a unique symbol that will be used to mark them on plots during plot design.</p>
 <table class="table my-3 table-hover">
     <thead>
         <tr>
@@ -119,7 +131,7 @@
     
                     </div>
                     <div id="change-symbol-btn" class="row justify-content-center">
-                        <h5><span class="badge badge-success edit-symbol open-symbol-modal" style="cursor: pointer;" data-toggle="modal" data-target="#symbolModal">Edit</span></h5>
+                        <h5><span class="badge badge-info edit-symbol open-symbol-modal" style="cursor: pointer;" data-toggle="modal" data-target="#symbolModal">Edit</span></h5>
 
 
                     </div>

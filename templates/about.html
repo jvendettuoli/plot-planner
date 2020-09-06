@@ -1,38 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
 <!-- <img class="image-fluid" src="static/images/homepage-garden.jpg" alt="Photo by Markus Spiske on Unsplash"> -->
-<div class="container">
-    <div class="jumbotron">
-        <h1 class="display-4">What is Plot Planner!</h1>
-        <p class="lead">Plot Planner uses pubically available data from trefle.io API </p>
-        <hr class="my-4">
-        <p>If you would like a brief overview of how this site works, click below.</p>
-        <p class="lead">
-          <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-        </p>
+<div class="container my-4">
+    <div class="row">
+        <h1 class="display-4">What is Plot Planner?</h1>
+        <hr>
+        <p class="lead">At its core Plot Planner is a tool for homesteaders and gardeners that allows them to search and filter for plants and design plots. It uses the combined sources found in pubically available data from the open source <a class="text-success" href="https://trefle.io/">Trefle API</a> to provide information about plant characteristics, distribution, and growth specifications. Users can design and save projects around their plants, to help prepare them for their next planting endeavour, big or small.</p>
     </div>
     <div class="row">
-        <div class="col" >
-            <div class="card bg-dark text-black">
-                <img class="card-img" src="/static/images/homepage-garden.jpg" alt="Card image" >
-                <div class="card-img-overlay">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card bg-dark text-white">
-                <img class="card-img" src="/static/images/homepage-garden.jpg" alt="Card image">
-                <div class="card-img-overlay">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-            </div>
-        </div>
+        <h2>How does it work?</h2>
+        <p class="lead">Anyone can search through plants, but to create and save your work you'll need to signup. Once you have an account, you can create projects, plots, and plant lists to organize your work.</p>
+        <br>
+        <p class="lead">Plant lists are the base component of any project, and are how you save plants and create symbols to represent those plants. You can connect plant lists to plots and projects to help organize your ideas, and easily access different components of your project.</p>
     </div>
+    <div class="row">
+        <h2>What is next?</h2>
+        <p class="lead">Plot Planner is in its infancy. We have high hopes to create a fully integrated system for planning and managing planting plots!</p>
+    </div>
+    <div class="row">
+        <p class="lead">A few features in the works:</p>
+        <ul class="list-group">
+            <li class="list-group-item">Expand the available data with additional sources, with a focus on agricultural data (ideal growth conditions, planting times, harvesting times, etc.).</li>
+            <li class="list-group-item">Ability to physically organize plots within a project view, to mimic plots in a yard.</li>
+            <li class="list-group-item">Sortable tables.</li>
+            <li class="list-group-item">Improved plant symbol selection.</li>
+            <li class="list-group-item">Sorting options for plant searches.</li>
+            <li class="list-group-item">Customized planting reports based on plants within a project.</li>
+            <li class="list-group-item">Easier viewing and sorting of plant specifications within plant lists.</li>
+            <li class="list-group-item">Connection with Plant Identification APIs.</li>
+            <li class="list-group-item">Information on plant healthcare, diseases, and pests.</li>         
+            <li class="list-group-item">Share saved projects, plots, and plant lists and collaborate with others.</li>
+            <li class="list-group-item">Integration with 'smart farm' APIs, such as irrigation timers.</li>
+        </ul>
+        <hr>
+
+    </div>
+    <div class="row">
+        <p class="lead">Keep an eye out for updates, and thanks for visiting Plot Planner!</p>
+    </div>
+  
+
 
 </div>
 {% endblock %}

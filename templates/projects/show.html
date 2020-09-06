@@ -1,7 +1,8 @@
 {% from 'macros.html' import macro_form %}
+{% from 'macros.html' import plot_viewer %}
 {% extends 'base.html' %}
 {% block content %}
-<div class="jumbotron jumbotron-fluid text-white" id="plot-show-jumbo">
+<div class="jumbotron jumbotron-fluid text-white" id="project-show-jumbo">
     <div class="container text-backdrop-dark">
         <div class="row pr-4 ">
             <div class="col">
@@ -25,9 +26,11 @@
     </div>
 </div>
 
-
+<!-- Connections -->
 <div class="container">
+    <h2 class="text-center">Connections</h2>
     <div class="row">
+        <p class="lead">Add and Remove connections, or easily visit other created content by clicking on the links of connected content.</p>
         <div class="col-md-6 col-12 border-right">
             <h5>Connected Plots</h5>
                 <ul id="project-list">
@@ -52,6 +55,7 @@
                
         </div>   
     </div>
+    <!-- Show Add Form Buttons -->
     <div class="row align-items-bottom">
         <div class="col-6 ">
         <button id="toggle-plots-btn" type="button" data-toggle="modal" data-target="#plot-modal" class="btn btn-block btn-outline-info ">Show/Hide Your Other Plots <i class="fas fa-caret-down"></i></button>
@@ -62,25 +66,112 @@
     </div>
 </div>
 
+<!-- Add Forms -->
 <div class="container" data-project-id="{{project.id}}">
-    <form class="mt-4" id="add-plantlists-form" style="display: none;">
-        {{macro_form(form_plantlist)}}
-        <button class="btn btn-block btn-info">Add Selected Plant Lists to Project</button>
-    </form>
-    <form class="mt-4" id="add-plots-form" style="display: none;">
-        {{macro_form(form_plot)}}
-        <div class="row">
-            <div class="col">
-                <button  class="btn btn-block btn-info">Add Selected Plots to Project</button>
-            </div>
+    <div class="row">
+        <!-- Plots -->
+        <div class="col-6">
+            <form class="mt-4" id="add-plots-form" style="display: none">
+                {{macro_form(form_plot)}}
+                <div class="row">
+                    <div class="col">
+                        <button  class="btn btn-block btn-info">Add Selected Plots to Project</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+        <!-- Plant lists -->
+        <div class="col-6">
+            <form class="mt-4" id="add-plantlists-form" style="display: none;">
+                {{macro_form(form_plantlist)}}
+                <button class="btn btn-block btn-info">Add Selected Plant Lists to Project</button>
+            </form>
+        </div>
+    </div>
 </div>
 <hr>
 
 <div class="container">
-<h2>Project</h2>
+    <h2 class="text-center">Project Components</h2>
+    <h3>Plots</h3>
+    {% for plot in project.plots %}
+        <div data-plot-id="{{plot.id}}" class="container components{% if loop.index0 % 2 == 0 %} even {% endif %}">
+            <div class="row border-top pt-2">
+                <div class="col-2">
+                    <h4>{{plot.name|title}}</h4>
+                </div>
+                <div class="col border-left pt-2">
+                    <h6>Description</h6>
+                    <p>{{plot.description}}</p>
+                </div>
+                <div class="col border-left pt-2">
+                    <h6>Dimensions</h6>
+                    <p><b>Width: </b>{{plot.width}} feet</p>
+                    <p><b>Length: </b>{{plot.length}} feet</p>
+                </div>
+            </div>
+            {% for plantlist in plot.plantlists %}
+            <div class="row ">
+                <div class="col-1">
+                </div>
+                <div class="col-2 pt-2 border-top">
+                    <h5>{{plantlist.name|title}}</h5>
+                </div>
+                <div class="col pt-2 border-top border-left">
+                    <h6>Description</h6>
+                    <p>{{plantlist.description}}</p>
+                </div>
+            </div>
+                {% if plantlist.plants %}
+                <div class="row ">
+                    <div class="col-2">
+                    </div>
+                    <div class="col pt-2 border-top">
+                    <h6>Plants</h6>
+                    <ul>
+                    {% for plant in plantlist.plants %}
+                        <li>{{plant.common_name|title}}</li>
+                    {% endfor %}
+                    </ul>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <hr>
+    <h3 class="mt-3">Plant Lists</h3>
+    {% for plantlist in project.plantlists %}
+    <div data-plantlist-id="{{plantlist.id}}" class="container components{% if loop.index0 % 2 == 0 %} even {% endif %}">
+        <div class="row ">
+            <div class="col-1">
+            </div>
+            <div class="col-2 pt-2 border-top">
+                <h5>{{plantlist.name|title}}</h5>
+            </div>
+            <div class="col pt-2 border-top border-left">
+                <h6>Description</h6>
+                <p>{{plantlist.description}}</p>
+            </div>
+        </div>
+            {% if plantlist.plants %}
+            <div class="row ">
+                <div class="col-2">
+                </div>
+                <div class="col pt-2 border-top">
+                <h6>Plants</h6>
+                <ul>
+                {% for plant in plantlist.plants %}
+                    <li>{{plant.common_name|title}}</li>
+                {% endfor %}
+                </ul>
+                </div>
+            </div>
+            {% endif %}
 
+
+    </div>
+    {% endfor %}
 </div>
 
 
@@ -88,4 +179,5 @@
 {% block code %}
 <script src="/static/changeConnection.js"></script>
 <script src="/static/showProjectSubform.js"></script>
+<script src="/static/query.js"></script>
 {% endblock %}

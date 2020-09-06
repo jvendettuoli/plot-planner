@@ -171,17 +171,19 @@ def logout():
 
 
 ##############################################################################
-# Homepage and error pages
+# Homepage and About pages
 
 
 @app.route("/")
 def homepage():
     """Show homepage"""
-    if g.user:
-        return render_template("home.html")
+    return render_template("home.html")
 
-    else:
-        return render_template("home.html")
+
+@app.route("/about")
+def about():
+    """Show homepage"""
+    return render_template("about.html")
 
 
 ##############################################################################
@@ -291,7 +293,7 @@ def add_projects():
             project = Project.add(
                 name=form.name.data,
                 description=form.description.data,
-                is_public=form.is_public.data,
+                # is_public=form.is_public.data,
             )
             db.session.commit()
             g.user.projects.append(project)
@@ -313,7 +315,7 @@ def add_projects():
 
         flash("Successfully created project!", "success")
 
-        return redirect(url_for("homepage"))
+        return redirect(url_for("show_project", project_id=project.id))
 
     return render_template("projects/add.html", form=form)
 
@@ -360,7 +362,7 @@ def edit_project(project_id):
             project.edit(
                 name=form.name.data,
                 description=form.description.data,
-                is_public=form.is_public.data,
+                # is_public=form.is_public.data,
             )
             db.session.commit()
             g.user.projects.append(project)
@@ -474,7 +476,7 @@ def add_plantlists():
             plantlist = PlantList.add(
                 name=form.name.data,
                 description=form.description.data,
-                is_public=form.is_public.data,
+                # is_public=form.is_public.data,
             )
             db.session.commit()
             g.user.plantlists.append(plantlist)
@@ -546,7 +548,7 @@ def edit_plantlist(plantlist_id):
             plantlist.edit(
                 name=form.name.data,
                 description=form.description.data,
-                is_public=form.is_public.data,
+                # is_public=form.is_public.data,
             )
             db.session.commit()
             g.user.plantlists.append(plantlist)
@@ -651,7 +653,7 @@ def add_plots():
                 description=form.description.data,
                 width=form.width.data,
                 length=form.length.data,
-                is_public=form.is_public.data,
+                # is_public=form.is_public.data,
             )
             db.session.commit()
             g.user.plots.append(plot)
@@ -723,7 +725,7 @@ def edit_plot(plot_id):
                 description=form.description.data,
                 width=form.width.data,
                 length=form.length.data,
-                is_public=form.is_public.data,
+                # is_public=form.is_public.data,
             )
             db.session.commit()
             g.user.plots.append(plot)
@@ -815,6 +817,26 @@ def plot_cell_add_symbol(plot_id, plantlists_plants_id, cell_x, cell_y):
     )
 
 
+@app.route(
+    "/plots/<int:plot_id>/delete/cell/x/<int:cell_x>/y/<int:cell_y>", methods=["POST"],
+)
+def plot_cell_delete_row(plot_id, cell_x, cell_y):
+    """Adds the plantlists_plants id to a plot cell, which effectively keeps the symbol updated even if changed via a plantlist"""
+
+    plot_cells_symbols = Plot_Cells_Symbols.query.filter(
+        Plot_Cells_Symbols.plot_id == plot_id,
+        Plot_Cells_Symbols.cell_x == cell_x,
+        Plot_Cells_Symbols.cell_y == cell_y,
+    ).delete()
+
+    db.session.commit()
+
+    return (
+        f"Plot {plot_id} removed symbol from plot cell {cell_x},{cell_y} successfully.",
+        200,
+    )
+
+
 ###########################################################################
 # Plant Routes
 
@@ -844,8 +866,6 @@ def plants_search_table():
 def plant_profile(plant_slug):
     """Shows specific plant page"""
 
-    form = AddPlantListForm()
-
     payload = {
         "token": TREFLE_API_KEY,
     }
@@ -858,54 +878,54 @@ def plant_profile(plant_slug):
     else:
         main_species = trefle_plant
 
-    # print("$$$$$$$$$$$$$$$$$$", main_species)
-    plant = Plant.query.filter(Plant.trefle_id == main_species["id"]).one_or_none()
+    form = AddPlantListForm()
 
-    print("$$$$$$$$$$$$$$$$$$", plant)
+    if g.user:
+        plant = Plant.query.filter(Plant.trefle_id == main_species["id"]).one_or_none()
 
-    if request.method == "POST":
-        print("POST METHOD")
-        # print(main_species)
-        if not plant:
+        if request.method == "POST":
+            print("POST METHOD")
+            # print(main_species)
+            if not plant:
 
-            try:
-                plant = Plant.add(
-                    trefle_id=main_species["id"],
-                    slug=main_species["slug"],
-                    common_name=main_species["common_name"],
-                    scientific_name=main_species["scientific_name"],
-                    family=main_species["family"],
-                    family_common_name=main_species["family_common_name"],
-                    image_url=main_species["image_url"],
-                )
+                try:
+                    plant = Plant.add(
+                        trefle_id=main_species["id"],
+                        slug=main_species["slug"],
+                        common_name=main_species["common_name"],
+                        scientific_name=main_species["scientific_name"],
+                        family=main_species["family"],
+                        family_common_name=main_species["family_common_name"],
+                        image_url=main_species["image_url"],
+                    )
 
-                db.session.commit()
+                    db.session.commit()
 
-            except IntegrityError:
-                flash("Failed to create plant.", "danger")
-                return render_template(
-                    "plants/profile.html", main_species=main_species, form=form
-                )
+                except IntegrityError:
+                    flash("Failed to create plant.", "danger")
+                    return render_template(
+                        "plants/profile.html", main_species=main_species, form=form
+                    )
 
-        # Append selected plantlists to the plant
-        for plantlist in form.plantlists.data:
-            plantlist = PlantList.query.get(plantlist)
-            plant.plantlists.append(plantlist)
+            # Append selected plantlists to the plant
+            for plantlist in form.plantlists.data:
+                plantlist = PlantList.query.get(plantlist)
+                plant.plantlists.append(plantlist)
 
-        db.session.commit()
+            db.session.commit()
 
-    if plant:
-        form.plantlists.choices = [
-            (plantlist.id, plantlist.name,)
-            for plantlist in g.user.plantlists
-            if plantlist not in plant.plantlists
-        ]
+        if plant:
+            form.plantlists.choices = [
+                (plantlist.id, plantlist.name,)
+                for plantlist in g.user.plantlists
+                if plantlist not in plant.plantlists
+            ]
 
-    else:
-        print("ELSE")
-        form.plantlists.choices = [
-            (plantlist.id, plantlist.name,) for plantlist in g.user.plantlists
-        ]
+        else:
+            print("ELSE")
+            form.plantlists.choices = [
+                (plantlist.id, plantlist.name,) for plantlist in g.user.plantlists
+            ]
 
     return render_template("plants/profile.html", main_species=main_species, form=form)
 

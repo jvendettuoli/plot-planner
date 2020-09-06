@@ -69,7 +69,7 @@ class UserEditForm(FlaskForm):
 
     username = StringField("Username")
     email = StringField("E-mail", validators=[Email(), Optional()])
-    image_url = StringField("Image URL", validators=[URL(), Optional()])
+    image_url = StringField("Profile Image URL", validators=[URL(), Optional()])
     password = PasswordField("Current Password", validators=[InputRequired()])
 
 
@@ -77,16 +77,23 @@ class PlantSearchForm(FlaskForm):
     """Form for searching plants."""
 
     search = StringField("Search", validators=[Optional()])
-    edible_part = SelectMultipleField(
-        "Edible Parts",
+    duration = SelectMultipleField(
+        "Duration (life cycle)",
         choices=[
-            ("roots", "Roots"),
-            ("stem", "Stem"),
-            ("leaves", "Leaves"),
-            ("flowers", "Flowers"),
-            ("fruits", "Fruits"),
-            ("seeds", "Seeds"),
-            ("tubers", "Tubers"),
+            ("annual", "Annual"),
+            ("biennial", "Biennial"),
+            ("perennial", "Perennial"),
+        ],
+        validators=[Optional()],
+    )
+    ligneous_type = SelectMultipleField(
+        "Woody Plant Type",
+        choices=[
+            ("liana", "Liana"),
+            ("subshrub", "Subshrub"),
+            ("shrub", "Shrub"),
+            ("tree", "Tree"),
+            ("parasite", "Parasite"),
         ],
         validators=[Optional()],
     )
@@ -102,23 +109,16 @@ class PlantSearchForm(FlaskForm):
     fruit_months = SelectMultipleField(
         "Fruit Months", choices=TREFLE_MONTH_CHOICES, validators=[Optional()],
     )
-    ligneous_type = SelectMultipleField(
-        "Woody Plant Type",
+    edible_part = SelectMultipleField(
+        "Edible Parts",
         choices=[
-            ("liana", "Liana"),
-            ("subshrub", "Subshrub"),
-            ("shrub", "Shrub"),
-            ("tree", "Tree"),
-            ("parasite", "Parasite"),
-        ],
-        validators=[Optional()],
-    )
-    duration = SelectMultipleField(
-        "Duration (life cycle)",
-        choices=[
-            ("annual", "Annual"),
-            ("biennial", "Biennial"),
-            ("perennial", "Perennial"),
+            ("roots", "Roots"),
+            ("stem", "Stem"),
+            ("leaves", "Leaves"),
+            ("flowers", "Flowers"),
+            ("fruits", "Fruits"),
+            ("seeds", "Seeds"),
+            ("tubers", "Tubers"),
         ],
         validators=[Optional()],
     )
@@ -155,11 +155,11 @@ class ProjectAddForm(FlaskForm):
     plantlists = SelectMultipleField(
         "Connect to your existing plant lists:", coerce=int
     )
-    is_public = BooleanField(
-        "Would you like this project to be available for other users to copy?",
-        validators=[Optional()],
-        default=False,
-    )
+    # is_public = BooleanField(
+    #     "Would you like this project to be available for other users to copy?",
+    #     validators=[Optional()],
+    #     default=False,
+    # )
 
 
 class PlantListAddForm(FlaskForm):
@@ -173,11 +173,11 @@ class PlantListAddForm(FlaskForm):
     projects = SelectMultipleField("Connect to existing project:", coerce=int)
     plots = SelectMultipleField("Connect to your existing plots:", coerce=int)
 
-    is_public = BooleanField(
-        "Would you like this list to be available for other users to copy?",
-        validators=[Optional()],
-        default=False,
-    )
+    # is_public = BooleanField(
+    #     "Would you like this list to be available for other users to copy?",
+    #     validators=[Optional()],
+    #     default=False,
+    # )
 
 
 class PlotAddForm(FlaskForm):
@@ -210,8 +210,8 @@ class PlotAddForm(FlaskForm):
         "Connect to your existing plant lists:", coerce=int
     )
 
-    is_public = BooleanField(
-        "Would you like this list to be available for other users to copy?",
-        validators=[Optional()],
-        default=False,
-    )
+    # is_public = BooleanField(
+    #     "Would you like this list to be available for other users to copy?",
+    #     validators=[Optional()],
+    #     default=False,
+    # )

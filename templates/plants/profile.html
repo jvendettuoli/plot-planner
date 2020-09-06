@@ -7,7 +7,7 @@
 <!-- Add Plant to Plant list -->
 <div id="plant-profile-add-plant" class="container-fluid">
 
-    {% if g.user  %}
+    {% if g.user %}
         {% if g.user.plantlists|length > 0  %}
             {% if form.plantlists.choices|length > 0 %}
 
@@ -30,16 +30,16 @@
         You need to be logged in order to save a plant to a plant list. <a href="{{url_for('signup')}}">Signup</a> or <a href="{{url_for('login')}}">Login</a> to start creating your own projects!
       </div>
     {% endif %}
-
 </div>
-<div class="container">
 
+
+<div class="container">
 <!-- Plant Info -->
 <div class="container my-3">
     <div class="row">
         <!-- Plant Profile Image -->
         <div class="col-6">
-            <img class="img-thumbnail plant-profile-pic" src="{% if main_species['image_url'] == None %}/static/images/default-pic.png{% else %}{{main_species['image_url']}}{% endif %}" alt="{{main_species['common_name']}} image">
+            <img class="img-thumbnail plant-profile-pic" src="{% if main_species['image_url'] == None %}/static/images/default-plant-pic.png{% else %}{{main_species['image_url']}}{% endif %}" alt="{{main_species['common_name']}} image">
         </div>
         <div class="col-6">
             <!-- Plant Basic Details -->
@@ -51,7 +51,7 @@
                         {% if main_species['common_name'] %}
                         {{main_species['common_name']}}
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                     
                     </td>
@@ -62,7 +62,7 @@
                         {% if main_species['scientific_name'] %}
                         <i>{{main_species['scientific_name']}}</i></td>
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                   </tr>
                   <tr>
@@ -71,7 +71,7 @@
                         {% if main_species['genus'] %}
                         <i>{{main_species['genus']}}</i>
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                     </td>
                   </tr>
@@ -81,7 +81,7 @@
                         {% if main_species['family'] %}
                         {{main_species['family']}}
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                     </td>
                   </tr>
@@ -90,7 +90,7 @@
                     <td>{% if main_species['family_common_name'] %}
                         {{main_species['family_common_name']}}
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                     </td>
                   </tr>
@@ -99,7 +99,7 @@
                     <td>{% if main_species['duration'] %}
                         {{main_species['duration']|join(", ")|title}}
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                     </td>
                   </tr>
@@ -108,7 +108,7 @@
                     <td>{% if main_species['edible_part'] %}
                         {{main_species['edible_part']|join(", ")|title}}
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                     </td>
                   </tr>
@@ -121,7 +121,7 @@
                         {% elif value and characteristic=='conspicuous' %}
                         {{value}}
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         {% endif %}
                         <br>
                         {% endfor %}
@@ -144,13 +144,13 @@
                             False
                             
                             {% else %}
-                            <i>No data available.</i>
+                            <i class="no-data">No data available.</i>
                             
                             {% endif %}
                             <br>
                             {% endfor %}
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         
                         {% endif %}
                         
@@ -173,13 +173,13 @@
                         False
                         
                         {% else %}
-                        <i>No data available.</i>
+                        <i class="no-data">No data available.</i>
                         
                         {% endif %}
                         <br>
                         {% endfor %}
                     {% else %}
-                    <i>No data available.</i>
+                    <i class="no-data">No data available.</i>
                     
                     {% endif %}
                     </td>
@@ -220,7 +220,7 @@
                         {% if images %}
                         {{img_carousel(feature, images)}}
                         {% else %}
-                        <i>No images available.</i>
+                        <i class="no-data">No images available.</i>
                         {% endif %}
                     </div>
                 </div>
@@ -250,13 +250,13 @@
                                 <td>{% if locations %}
                                     {{locations|join(', ')|title}}   
                                     {% else %}
-                                    <i>No data available.</i>
+                                    <i class="no-data">No data available.</i>
                                     {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
                         {% else %}
-                            <i>No data available.</i>
+                            <i class="no-data">No data available.</i>
                         {% endif %}
                     </tbody>
                 </table>
@@ -285,7 +285,7 @@
                         <td>{% if values is mapping %}
                             {% for key, value in values.items() %}
                                 {% if value == 'None' or value == None %}
-                                    <i>No data available.</i>
+                                    <i class="no-data">No data available.</i>
                                     <br>
                                     {% else %}
                                         {% if 'deg' in key %}
@@ -304,7 +304,7 @@
                             {{values}}
 
                             {% else %}
-                            <i>No data available.</i>
+                            <i class="no-data">No data available.</i>
                             {% endif %}
                         </td>
                     </tr>
@@ -335,7 +335,7 @@
                         <td>{% if values is mapping %}
                                 {% for key, value in values.items() %}
                                     {% if value == 'None' or value == None %}
-                                    <i>No data available.</i>
+                                    <i class="no-data">No data available.</i>
                                     <br>
                                     {% elif 'deg' in key %}
                                         {{value}} &#176;{{key|replace('deg_f', 'F')|replace('deg_c', 'C')}} <br>
@@ -348,7 +348,7 @@
                             {% elif values and values != 'None' %}
                                 {{values}}
                             {% else %}
-                            <i>No data available.</i>
+                            <i class="no-data">No data available.</i>
                             {% endif %}
                         </td>
                     </tr>
@@ -379,7 +379,7 @@
                     </li>
                     {% endif %}
                     {% else %}
-                    <i>No data available.</i>
+                    <i class="no-data">No data available.</i>
 
                     {% endfor %}
                 </ul>
@@ -394,7 +394,7 @@
 </div>
 
 
-
+{% if g.user %}
       <!--Add to Plantlists Modal -->
   
       <div class="modal fade" id="plantlistAddPlantModal" tabindex="-1" role="dialog" aria-labelledby="plantlistAddPlantModalLabel" aria-hidden="true">
@@ -417,6 +417,7 @@
         </div>
         </div>
     </div>
+{% endif %}
 {% endblock %}
 {% block code %}
 {% endblock %}

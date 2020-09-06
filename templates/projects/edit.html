@@ -3,7 +3,7 @@
 
 <div class="container mt-4">
     <h1>Edit {{project.name}}</h1>
-    <p>Editing the project will reset current connections to what is selected here.</p>
+    <p class="lead">Editing the project will not remove connections, only add them if they are selected and not already connected.</p>
 
     <form method="POST">
     {% include 'base-form.html' %}

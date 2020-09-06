@@ -42,4 +42,9 @@ class Connection {
 			`${this.baseUrl}/plots/${plotId}/add/symbol/${plantlistsPlantsId}/x/${cellX}/y/${cellY}`
 		);
 	}
+
+	//POST request to delete symbol from a plot cell
+	static async plotCellDeleteSymbol(plotId, cellX, cellY) {
+		const res = await axios.post(`${this.baseUrl}/plots/${plotId}/delete/cell/x/${cellX}/y/${cellY}`);
+	}
 }

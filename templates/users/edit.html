@@ -3,9 +3,9 @@
 {% block content %}
 
   <div class="row justify-content-md-center">
-    <div class="col-md-4">
-      <h2 class="join-message">Edit Your Profile</h2>
-      <p>You man any edit your username, e-mail, or profile picture (Image URL). Any field left blank will not be changed.</p>
+    <div class="col-md-6 m-4">
+      <h2 class="join-message display-4">Edit Your Profile</h2>
+      <p class="lead">You may edit your username, e-mail, or profile picture (Profile Image URL). Any field left blank will not be changed.</p>
       <form method="POST" id="user_form">
         {{ form.hidden_tag() }}
 
@@ -27,7 +27,7 @@
         {% endif %}
         {{ form.password(placeholder="Enter your password to confirm", class="form-control") }}
 
-        <div class="edit-btn-area">
+        <div class="edit-btn-area d-flex justify-content-between mt-3">
           <a class="btn btn-warning text-white" href="{{url_for('user_profile', user_id=user.id)}}" class=btn btn-outline-secondary">Cancel</a>
           <button class="btn btn-success">Confirm Edits</button>
 
