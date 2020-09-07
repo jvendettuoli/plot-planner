@@ -26,12 +26,6 @@ class Plant(db.Model):
     family_common_name = db.Column(db.Text)
     image_url = db.Column(db.Text)
 
-    # symbol = db.relationship(
-    #     "Symbol",
-    #     secondary="plantlists_plants",
-    #     primaryjoin="and_(PlantLists_Plants.plantlist_id==Plant.plantlists.id, PlantLists_Plants.plant_id==Plant.id)",
-    # )
-
     @classmethod
     def add(
         cls,
@@ -243,8 +237,8 @@ class Symbol(db.Model):
     symbol = db.Column(db.Text, nullable=False, default=default_plant_symbol)
 
     def __repr__(self):
-        return f"<Symbol(id={self.id})>"
-        # return f"<Symbol(id='{self.id}', symbol={self.symbol}, color={self.color})>"
+        # return f"<Symbol(id={self.id})>"
+        return f"<Symbol(id='{self.id}', symbol={self.symbol}>"
 
     @classmethod
     def add(cls, symbol):

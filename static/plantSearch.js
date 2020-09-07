@@ -1,12 +1,19 @@
 'use strict';
 
-console.log('START plantSearch.js');
-
 //Cache common DOM elements
 const $plantForm = $('#plant-form');
 const $plantTableBody = $('#plant-table-body');
 const $noResults = $('#no-results');
 
+// Event handle on search form
+$plantForm.submit(handleSearchSubmit);
+
+/* 
+Search Class handles requests and methods associated with updating the
+plant table. This includes making axios requests to server, and 
+extracting applicable data for the table display, and generating
+HTML to show plants
+*/
 class Search {
 	constructor() {
 		//Change out based on deployment
@@ -29,17 +36,13 @@ class Search {
 		};
 	}
 
-	//GET request to plant_list view
+	//GET request to plant_list view and calls for populating the data
 	static async fetchAllPlants() {
-		console.log('FETCHING ALL PLANTS');
 		const res = await axios.get(`${this.baseUrl}/plants`);
-
 		let plantList = [];
 		for (let item of res.data) {
 			plantList.push(await this.extractPlantData(item));
 		}
-		console.log('plantList', plantList);
-
 		await this.populateTable(plantList);
 	}
 
@@ -68,8 +71,8 @@ class Search {
 		</div>`;
 	}
 
+	// Displays all plants returned by request, or No results found
 	static async populateTable(plantList) {
-		console.log('IN Populate');
 		let plantTableData = '';
 		for (let plant of plantList) {
 			plantTableData = plantTableData.concat(await this.generatePlantRowHTML(plant));
@@ -85,19 +88,15 @@ class Search {
 		$plantTableBody.html(plantTableData);
 	}
 
+	// POST request to return all plants based on search & filter terms
+	// Also calls to display data and updates pagination links
 	static async searchPlants(searchTerms) {
-		console.log('SEARCHING PLANTS');
-		console.log('searchTerms', searchTerms);
-
 		const res = await axios.post(`${this.baseUrl}/api/plants/search`, searchTerms);
-		console.log('RES', res);
-		console.log('RES.data', res.data);
 
 		let plantList = [];
 		for (let item of res.data[0]) {
 			plantList.push(await this.extractPlantData(item));
 		}
-		// console.log('plantList', plantList);
 		const links = res.data[1];
 
 		await this.populateTable(plantList);
@@ -107,18 +106,15 @@ class Search {
 
 //On form submit, put form values into object and pass to
 //searchPlants method.
-$plantForm.submit(function(evt) {
+
+function handleSearchSubmit(evt) {
 	evt.preventDefault();
-
 	let serializedInputs = $(this).serializeArray();
-	console.log('Serialized', serializedInputs);
-
 	let inputsObj = serializedInputs.reduce((obj, item) => {
 		obj[item.name] = obj[item.name] ? [ ...obj[item.name], item.value ] : [ item.value ];
 
 		return obj;
 	}, {});
-	console.log('InputObj', inputsObj);
 
 	Search.searchPlants(inputsObj);
-});
+}

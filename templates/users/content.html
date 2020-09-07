@@ -98,7 +98,7 @@
         </div>
     </div>
     {% else %}
-        <div class="container my-2">
+        <div class="container my-2 p-3">
             <h5 class="text-center">No projects created yet. Create one <a href="{{url_for('add_projects')}}">here</a>.</h5>      
         </div>
     {% endfor %}
@@ -112,7 +112,7 @@
 </div>
 
 
-  <div class="container content-plots">
+<div class="container content-plots p-4">
     <div class="list-group list-group-flush">
       {% for plot in user.plots %}
   
@@ -191,7 +191,7 @@
           </div>
       </div>
       {% else %}
-      <div class="container my-2">
+      <div class="container my-2 p-3">
           <h5 class="text-center">No plots created yet. Create one <a href="{{url_for('add_plots')}}">here</a>.</h5>      
       </div>
       {% endfor %}
@@ -293,7 +293,7 @@
         </div>
     </div>
     {% else %}
-    <div class="container my-2">
+    <div class="container my-2 p-3">
         <h5 class="text-center">No plant lists created yet. Create one <a href="{{url_for('add_plantlists')}}">here</a>.</h5>      
     </div>  
     {% endfor %}
@@ -303,7 +303,7 @@
 
 {% endblock %}
 {% block code %}
-<script src="/static/changeConnection.js"></script>
+<script src="/static/connection.js"></script>
 <script src="/static/query.js"></script>
 <script src="/static/contentSubform.js"></script>
 

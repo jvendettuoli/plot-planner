@@ -193,7 +193,11 @@ class PlotAddForm(FlaskForm):
             DataRequired(
                 message="Please estimage the plot width to the nearest whole foot."
             ),
-            NumberRange(min=1, message="Width cannot be less than 1 foot."),
+            NumberRange(
+                min=1,
+                max=10,
+                message="Width cannot be less than 1 foot or greater than 10 feet.",
+            ),
         ],
     )
     length = IntegerField(
@@ -202,7 +206,11 @@ class PlotAddForm(FlaskForm):
             DataRequired(
                 message="Please estimage the plot length to the nearest whole foot."
             ),
-            NumberRange(min=1, message="Width cannot be less than 1 foot."),
+            NumberRange(
+                min=1,
+                max=50,
+                message="Width cannot be less than 1 foot or greater than 50 feet.",
+            ),
         ],
     )
     projects = SelectMultipleField("Add to existing project:", coerce=int)

@@ -1,19 +1,14 @@
 'use strict';
 
-console.log('START Project subform.js');
-
-//Cache common DOM elements
-const $projRmvPlotBtn = $('.proj-rmv-plot-btn');
-const $projRmvPlntlstBtn = $('.proj-rmv-plntlst-btn');
-const $plotRmvPlntLstBtn = $('.plot-rmv-plntlst-btn');
-// const $projectsForm = $('#add-projects-form');
-// const $plotsForm = $('#add-plots-form');
-
+//Set common strings to variable
 const dataAttrProjectId = 'data-project-id';
 const dataAttrPlotId = 'data-plot-id';
 const dataAttrPlantListId = 'data-plantlist-id';
 
 //Cache common DOM elements
+const $projRmvPlotBtn = $('.proj-rmv-plot-btn');
+const $projRmvPlntlstBtn = $('.proj-rmv-plntlst-btn');
+const $plotRmvPlntLstBtn = $('.plot-rmv-plntlst-btn');
 const $toggleProjectsBtn = $('#toggle-projects-btn');
 const $togglePlotsBtn = $('#toggle-plots-btn');
 const $togglePlantlistsBtn = $('#toggle-plantlists-btn');
@@ -25,25 +20,48 @@ const $projectList = $('#project-list');
 const $plantlistList = $('#plantlist-list');
 const $modalBody = $('.modal-body');
 
+// On click of X btn on connected project
+$('ul').on('click', '.proj-rmv-plot-btn', handleRemovePlotConn);
+// On click of X btn on connected plantlists
+$('ul').on('click', '.proj-rmv-plntlst-btn', handleRemovePlantlistConn);
+
+// Toggles displaying plot add form
+$togglePlotsBtn.click(function(evt) {
+	$plotsForm.toggle('fast');
+});
+// Toggles displaying plantlist add form
+$togglePlantlistsBtn.click(function(evt) {
+	$plantlistsForm.toggle('fast');
+});
+
+// Handles Projects - Plots connections between subforms and connected lists
+$plotsForm.submit(handleAddPlotSubmit);
+
+// Handles Projects - Plant List connections between subforms and connected lists
+$plantlistsForm.submit(handleAddPlantlistSubmit);
+
 function generateOptionHTML(value, text) {
 	return `
 	<option value="${value}">${text}</option>
 	`;
 }
 
-$('ul').on('click', '.proj-rmv-plot-btn', function(evt) {
+// Removes the project-plot connection, and updates connected
+// projects list and project add form
+function handleRemovePlotConn(evt) {
 	const $li = $(evt.currentTarget).parent();
 	const plotId = $(evt.currentTarget).parent().attr(dataAttrPlotId);
 	const projectId = $li.attr(dataAttrProjectId);
 
 	Connection.projectRemovePlot(projectId, plotId);
 	$li.remove();
-	console.log(generateOptionHTML(projectId, $li.text()));
 
 	$('#plots').append(generateOptionHTML(plotId, $li.text()));
-});
+}
 
-$('ul').on('click', '.proj-rmv-plntlst-btn', function(evt) {
+// Removes the project-plantlist connection, and updates connected
+// plantlists list and plantlist add form
+function handleRemovePlantlistConn(evt) {
 	evt.preventDefault();
 	const $li = $(evt.currentTarget).parent();
 	const projectId = $li.attr(dataAttrProjectId);
@@ -53,8 +71,9 @@ $('ul').on('click', '.proj-rmv-plntlst-btn', function(evt) {
 	$li.remove();
 
 	$('#plantlists').append(generateOptionHTML(plantlistId, $li.text()));
-});
+}
 
+// Generates HTML for connected lists based on connection type
 function generateLiHtml(element, projectId, elementId, elementName) {
 	let rmvClass;
 	if (element === 'project') {
@@ -73,21 +92,11 @@ function generateLiHtml(element, projectId, elementId, elementName) {
 	return li;
 }
 
-$togglePlotsBtn.click(function(evt) {
-	$plotsForm.toggle('fast');
-});
-// $toggleProjectsBtn.click(function(evt) {
-// 	$projectsForm.toggle('fast');
-// });
-$togglePlantlistsBtn.click(function(evt) {
-	$plantlistsForm.toggle('fast');
-});
-
-// Handles Projects - Plots connections between subforms and connected lists
-$plotsForm.submit(function(evt) {
+// On add plot form submit updates plot form and connected plot
+// list. Makes connection for all selected values
+function handleAddPlotSubmit(evt) {
 	evt.preventDefault();
 
-	// const plantlistId = $(evt.currentTarget).parent().attr(dataAttrPlantListId);
 	const projectId = $(evt.currentTarget).closest('[data-project-id]').attr(dataAttrProjectId);
 	let serializedInputs = $(this).serializeArray();
 
@@ -103,12 +112,12 @@ $plotsForm.submit(function(evt) {
 			$(`option:selected[value='${element.value}']`).remove();
 		}
 	});
-});
+}
 
-// Handles Projects - Plant List connections between subforms and connected lists
-$plantlistsForm.submit(function(evt) {
+// On add plantlist form submit updates plantlist form and connected
+// plantlist list. Makes connection for all selected values
+function handleAddPlantlistSubmit(evt) {
 	evt.preventDefault();
-	console.log('PLOTFORM');
 
 	const projectId = $(evt.currentTarget).closest('[data-project-id]').attr(dataAttrProjectId);
 
@@ -122,9 +131,8 @@ $plantlistsForm.submit(function(evt) {
 			if ($plantlistList.text().includes('No plant lists connected yet.')) {
 				$plantlistList.empty();
 			}
-			console.log(optionText);
 			$plantlistList.append(generateLiHtml('plantlist', projectId, element.value, optionText));
 			$(`option:selected[value='${element.value}']`).remove();
 		}
 	});
-});
+}

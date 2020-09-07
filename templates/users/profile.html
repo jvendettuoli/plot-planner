@@ -11,7 +11,7 @@
             </div>
             <p class="lead my-3">Welcome, {{user.username}}! You can edit your profile details, or delete your account here.</p>
             <div class="d-flex justify-content-around">
-                <a class="btn btn-primary" href="{{url_for('edit_user')}}">Edit Profile</a>
+                <a class="btn btn-primary" href="{{url_for('edit_user',user_id=user.id)}}">Edit Profile</a>
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-modal">
                     Delete User
                 </button>

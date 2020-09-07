@@ -1,13 +1,13 @@
 'use strict';
 
-console.log('START changeConnection.js');
-
+/*
+Connection Class handles when various components add or remove other components. Currently more set up for organizational purposes than
+actual use of instances.
+*/
 class Connection {
 	constructor() {
 		//Change out based on deployment
 		this.baseURL = 'http://127.0.0.1:5000';
-		// this.projectId = projectId;
-		// this.plotId = plotId;
 	}
 	//Change out based on deployment
 	static baseUrl = 'http://127.0.0.1:5000';
@@ -42,7 +42,6 @@ class Connection {
 			`${this.baseUrl}/plots/${plotId}/add/symbol/${plantlistsPlantsId}/x/${cellX}/y/${cellY}`
 		);
 	}
-
 	//POST request to delete symbol from a plot cell
 	static async plotCellDeleteSymbol(plotId, cellX, cellY) {
 		const res = await axios.post(`${this.baseUrl}/plots/${plotId}/delete/cell/x/${cellX}/y/${cellY}`);
