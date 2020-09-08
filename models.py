@@ -161,7 +161,7 @@ class PlantList(db.Model):
     is_public = db.Column(db.Boolean)
 
     plants = db.relationship(
-        "Plant", secondary="plantlists_plants", backref="plantlists"
+        "Plant", secondary="plantlists_plants", backref="plantlists",
     )
 
     @classmethod
@@ -198,6 +198,7 @@ class Plot(db.Model):
     plantlists = db.relationship(
         "PlantList", secondary="plots_plantlists", backref="plots"
     )
+    plot_cells_symbols = db.relationship("Plot_Cells_Symbols", cascade="all,delete",)
 
     @classmethod
     def add(
@@ -317,11 +318,15 @@ class Plot_Cells_Symbols(db.Model):
     __tablename__ = "plot_cells_symbols"
 
     id = db.Column(db.Integer, primary_key=True)
-    plot_id = db.Column(db.Integer, db.ForeignKey("plots.id"), nullable=False,)
+    plot_id = db.Column(
+        db.Integer, db.ForeignKey("plots.id", ondelete="CASCADE"), nullable=False,
+    )
     cell_x = db.Column(db.Integer, nullable=False,)
     cell_y = db.Column(db.Integer, nullable=False,)
     plantlists_plants_id = db.Column(
-        db.Integer, db.ForeignKey("plantlists_plants.id"), nullable=False,
+        db.Integer,
+        db.ForeignKey("plantlists_plants.id", ondelete="CASCADE"),
+        nullable=False,
     )
 
     @classmethod
@@ -354,6 +359,8 @@ class PlantLists_Plants(db.Model):
 
     symbol = db.relationship("Symbol", backref="plantlists_plants")
     plant = db.relationship("Plant", backref="plantlists_plants")
+
+    plot_cells_symbols = db.relationship("Plot_Cells_Symbols", cascade="all,delete",)
 
     def edit(self, plantlist_id, plant_id, symbol_id):
         self.plantlist_id = plantlist_id or self.plantlist_id

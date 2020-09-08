@@ -33,7 +33,7 @@ function generateSymbolTrHtml(plpId, plant, symbol) {
 }
 
 // Sets the width of the plot container for style purposes
-$plotContainer.css('width', cellWidth * cols);
+$plotContainer.css('width', cellWidth * (cols + 1));
 
 //Changes plants-symbols list based on selection of plantlists that have at least one plant.
 $plantlistSelect.on('change', handlePlantlistSelect);

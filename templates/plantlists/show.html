@@ -95,6 +95,7 @@
 <div class="container mt-5">
 <h2 class="text-center">Plants</h2>
 <p class="lead">View the plants that have added to this list, and assign them a unique symbol that will be used to mark them on plots during plot design.</p>
+<div class="table-responsive">
 <table class="table my-3 table-hover">
     <thead>
         <tr>
@@ -103,6 +104,7 @@
             <th scope="col">Family</th>
             <th scope="col">Image</th>
             <th scope="col">Custom Symbol</th>
+            <th scope="col">Remove</th>
         </tr>
     </thead>
     <tbody ">
@@ -148,12 +150,18 @@
                 </div>
 
             </td>
+            <td class="text-center align-middle">
+                <form action="{{url_for('plantlist_remove_plant',plantlist_id=plantlist.id, plant_id=plant.id)}}" method="POST">
+                    <button class="btn btn-danger" type="submit"><i class="fas fa-times"></i></button>
+                </form>
+            </td>
             
         </tr>
         
         {% endfor %}
     </tbody>
     </table>
+</div>
     {% if not plantlist.plants %}
 <h6 class="text-center">No plants added yet. Add plants by searching <a href="{{url_for('plants_search_table')}}">here</a>, selecting a plant, and adding from its profile page.</h5>    {% endif %}
 

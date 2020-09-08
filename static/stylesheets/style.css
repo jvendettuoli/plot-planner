@@ -77,7 +77,7 @@
 	height: 50px;
 }
 .plot-col {
-	max-width: 50px;
+	width: 50px;
 	border: grey 1px dotted;
 	background-color: rgba(202, 202, 202, 0.349);
 }

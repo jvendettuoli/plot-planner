@@ -39,6 +39,7 @@ from models import (
     Symbol,
     PlantLists_Plants,
     Plot_Cells_Symbols,
+    default_plant_symbol,
 )
 from secret import TREFLE_API_KEY, FLASK_SECRET
 
@@ -60,6 +61,12 @@ connect_db(app)
 
 # db.drop_all()
 # db.create_all()
+
+symbol = Symbol.query.filter(Symbol.symbol == default_plant_symbol).one_or_none()
+if not symbol:
+    Symbol.add(symbol=default_plant_symbol)
+    db.session.commit()
+
 
 # Trefle API base url
 API_BASE_URL = "https://trefle.io/api/v1"
@@ -440,7 +447,7 @@ def project_remove_plot(project_id, plot_id):
     project.plots.remove(plot)
     db.session.commit()
 
-    return (f"Plot {plot_id} remove from Project {project_id} successfully.", 200)
+    return (f"Plot {plot_id} removed from Project {project_id} successfully.", 200)
 
 
 @app.route("/projects/<int:project_id>/add/plot/<int:plot_id>", methods=["POST"])
@@ -470,7 +477,7 @@ def project_remove_plantlist(project_id, plantlist_id):
     db.session.commit()
 
     return (
-        f"Plant List {plantlist_id} remove from Project {project_id} successfully.",
+        f"Plant List {plantlist_id} removed from Project {project_id} successfully.",
         200,
     )
 
@@ -488,7 +495,7 @@ def project_add_plantlist(project_id, plantlist_id):
     db.session.commit()
 
     return (
-        f"Plant List {plantlist_id} added to project {project_id} successfully.",
+        f"Plant List {plantlist_id} connected to Project {project_id} successfully.",
         200,
     )
 
@@ -649,7 +656,7 @@ def plot_remove_plantlist(plot_id, plantlist_id):
     db.session.commit()
 
     return (
-        f"Plant List {plantlist_id} removed from plot {plot_id} successfully.",
+        f"Plant List {plantlist_id} removed from Plot {plot_id} successfully.",
         200,
     )
 
@@ -665,7 +672,7 @@ def plot_add_plantlist(plot_id, plantlist_id):
     db.session.commit()
 
     return (
-        f"Plant List {plantlist_id} added to plot {plot_id} successfully.",
+        f"Plant List {plantlist_id} connected to Plot {plot_id} successfully.",
         200,
     )
 
@@ -687,7 +694,7 @@ def plot_cell_add_symbol(plot_id, plantlists_plants_id, cell_x, cell_y):
     db.session.commit()
 
     return (
-        f"Plantlists_Plants ID {plantlists_plants_id} added to plot cell {plot_cells_symbols} successfully.",
+        f"Plantlists_Plants ID {plantlists_plants_id} added to Plot cell {plot_cells_symbols.id} successfully.",
         200,
     )
 
@@ -697,7 +704,7 @@ def plot_cell_add_symbol(plot_id, plantlists_plants_id, cell_x, cell_y):
 )
 @check_authorized
 def plot_cell_delete_row(plot_id, cell_x, cell_y):
-    """Adds the plantlists_plants id to a plot cell, which effectively keeps the symbol updated even if changed via a plantlist"""
+    """Deletes a cell symbol connection by deleting the row from database"""
 
     plot_cells_symbols = Plot_Cells_Symbols.query.filter(
         Plot_Cells_Symbols.plot_id == plot_id,
@@ -773,8 +780,6 @@ def show_plantlist(plantlist_id):
         PlantLists_Plants.plantlist_id == plantlist_id
     ).all()
 
-    print("plantlists_plants", plantlists_plants)
-
     # Map the symbols to the plants for use in generating on frontend
     plant_symbol_map = {item.plant_id: item.symbol for item in plantlists_plants}
 
@@ -847,11 +852,23 @@ def edit_plantlist(plantlist_id):
     return render_template("plantlists/edit.html", form=form, plantlist=plantlist)
 
 
+@app.route("/plantlists/<int:plantlist_id>/delete", methods=["POST"])
+@check_authorized
+def delete_plantlist(plantlist_id):
+    """Delete plant list"""
+    plantlist = PlantList.query.get_or_404(plantlist_id)
+
+    db.session.delete(plantlist)
+    db.session.commit()
+
+    return redirect(url_for("user_content", user_id=g.user.id))
+
+
 @app.route("/plantlists/<int:plantlist_id>/add/plant/<int:plant_id>", methods=["POST"])
 @check_authorized
 def plantlist_add_plant(plantlist_id, plant_id):
     """Add specific plant to plantlist"""
-    plant = Plant.query.get_or_404(plot_id)
+    plant = Plant.query.get_or_404(plant_id)
     plantlist = PlantList.query.get_or_404(plantlist_id)
 
     plantlist.plants.append(plant)
@@ -863,16 +880,30 @@ def plantlist_add_plant(plantlist_id, plant_id):
     )
 
 
-@app.route("/plantlists/<int:plantlist_id>/delete", methods=["POST"])
+@app.route(
+    "/plantlists/<int:plantlist_id>/remove/plant/<int:plant_id>", methods=["POST"]
+)
 @check_authorized
-def delete_plantlist(plantlist_id):
-    """Delete plant list"""
+def plantlist_remove_plant(plantlist_id, plant_id):
+    """Add specific plant to plantlist"""
+    plant = Plant.query.get_or_404(plant_id)
     plantlist = PlantList.query.get_or_404(plantlist_id)
+    plantlists_plants = PlantLists_Plants.query.filter(
+        PlantLists_Plants.plant_id == plant.id,
+        PlantLists_Plants.plantlist_id == plantlist.id,
+    ).one_or_none()
 
-    db.session.delete(plantlist)
+    plot_cells_symbols = Plot_Cells_Symbols.query.filter(
+        Plot_Cells_Symbols.plantlists_plants_id == plantlists_plants.id
+    ).delete()
+    db.session.delete(plantlists_plants)
     db.session.commit()
 
-    return redirect(url_for("user_content", user_id=g.user.id))
+    # return (
+    #     f"Plant {plant_id} removed from plantlist {plantlist_id} successfully.",
+    #     200,
+    # )
+    return redirect(url_for("show_plantlist", plantlist_id=plantlist.id))
 
 
 @app.route(
@@ -886,26 +917,19 @@ def add_symbol(plantlist_id, plant_id):
         PlantLists_Plants.plant_id == plant_id,
     ).first()
 
-    print("plantlistplants", plantlists_plants)
-
     # Check to see if they symbol has been created before, and use it as opposed to creating a duplicate
     symbol = Symbol.query.filter(Symbol.symbol == request.json["symbol"]).first()
-    print(request.json["symbol"])
-    print("SYMBOL", symbol)
     # If the symbol hasn't been created by anyone yet, create a new one
     if not symbol:
         try:
             symbol = Symbol.add(symbol=request.json["symbol"])
-            print("INSIDE SYmbol", symbol, symbol.id)
             db.session.commit()
-            print("INSIDE SYmbol", symbol, symbol.id)
 
         except IntegrityError as e:
             flash("Failed to create symbol.", "danger")
             return redirect(url_for("show_plantlist", plantlist_id=plantlist_id))
 
     # Update which symbol is connected to plant on plantlist
-    print("symbolfinal", symbol, symbol.id)
     plantlists_plants.edit(
         plantlist_id=plantlist_id, plant_id=plant_id, symbol_id=symbol.id
     )
