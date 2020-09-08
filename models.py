@@ -359,6 +359,7 @@ class PlantLists_Plants(db.Model):
         self.plantlist_id = plantlist_id or self.plantlist_id
         self.plant_id = plant_id or self.plant_id
         self.symbol_id = symbol_id or self.symbol_id
+
         db.session.add(self)
         db.session.commit()
 

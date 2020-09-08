@@ -230,7 +230,8 @@ def edit_user(user_id):
                 user.edit(
                     form.username.data, form.email.data, form.image_url.data,
                 )
-            except IntegrityError:
+            except (IntegrityError, InvalidRequestError) as e:
+                db.session.rollback()
                 flash("Username already taken", "danger")
                 return redirect(url_for("edit_user", user_id=g.user.id))
 
@@ -772,7 +773,7 @@ def show_plantlist(plantlist_id):
         PlantLists_Plants.plantlist_id == plantlist_id
     ).all()
 
-    print('plantlists_plants', plantlists_plants)
+    print("plantlists_plants", plantlists_plants)
 
     # Map the symbols to the plants for use in generating on frontend
     plant_symbol_map = {item.plant_id: item.symbol for item in plantlists_plants}
