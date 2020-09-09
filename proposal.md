@@ -10,7 +10,7 @@
 your users?**
 >The core demographic will be homesteaders and gardeners with small plots. Generally hobbyists or people attempting to live more sustainably by growing some of their own food. The site will not likely provide any information beyond what you could find searching the web, but it will provide it in an organized fashion associated with user designed plots and needs. 
 >
->The demographic can be extended to general plant enthusiasts by providing information on other plants besides crop species and with features such as plant ID, information on pests/pathogens, plant-centric blog/news, etc. It could also be extended to larger plots, or smart farms, through the inclusion of smart farm APIs
+>The demographic can be extended to general plant enthusiasts by providing information on other plants besides crop species and with features such as plant ID, information on pests/pathogens, plant-centric blog/news, etc. It could also be extended to larger plots, or smart farms, through the inclusion of smart farm APIs.
 
 **3. What data do you plan on using? You may have not picked your actual API yet,
 which is fine, just outline what kind of data you would like it to contain.**
@@ -20,7 +20,7 @@ which is fine, just outline what kind of data you would like it to contain.**
 >- Trefle, https://trefle.io/
 >- ETwater, http://etwater.com/developer/
 >
->Plot Planner will use any APIs that have data on plant species characteristics and growth requirements. Several possibilities are listed at the top of this document. This data could also be webscraped from a variety of sites/documents that have plant data present in tables. The core features of the site would function best with the following attributes:
+>Plot Planner will use any APIs that have data on plant species characteristics and growth requirements. This data could also be webscraped from a variety of sites/documents that have plant data present in tables. The core features of the site would function best with the following attributes:
 >- Plant Name
 >- Species
 >- Region/Biome
