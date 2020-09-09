@@ -80,9 +80,6 @@ toolbar = DebugToolbarExtension(app)
 connect_db(app)
 logging.debug("Database Modals connected")
 
-db.create_all()
-logging.debug("Tables created")
-
 
 # Trefle API base url
 API_BASE_URL = "https://trefle.io/api/v1"
