@@ -1,4 +1,8 @@
-import os, requests
+import os, requests, logging
+
+logging.basicConfig(level=logging.DEBUG)
+logging.debug("app.py start")
+
 
 from flask import (
     Flask,
@@ -11,10 +15,16 @@ from flask import (
     url_for,
     jsonify,
 )
+
+logging.debug("flask imported")
+
 from functools import wraps
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy import or_
+
+logging.debug("modules imported")
+
 
 from forms import (
     UserAddForm,
@@ -28,6 +38,9 @@ from forms import (
     AddProjectForm,
     AddPlantListForm,
 )
+
+logging.debug("forms imported")
+
 from models import (
     db,
     connect_db,
@@ -41,9 +54,16 @@ from models import (
     Plot_Cells_Symbols,
     default_plant_symbol,
 )
+
+logging.debug("models imported")
+
 from secret import TREFLE_API_KEY, FLASK_SECRET
 
+logging.debug("secrets imported")
+
+
 app = Flask(__name__)
+logging.debug("app = Flask")
 
 # Get DB_URI from environ variable or,
 # if not set there, use development local db.
@@ -58,14 +78,10 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", FLASK_SECRET)
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+logging.debug("Database Modals connected")
 
-# db.drop_all()
-# db.create_all()
-
-symbol = Symbol.query.filter(Symbol.symbol == default_plant_symbol).one_or_none()
-if not symbol:
-    Symbol.add(symbol=default_plant_symbol)
-    db.session.commit()
+db.create_all()
+logging.debug("Tables created")
 
 
 # Trefle API base url
@@ -775,7 +791,9 @@ def show_plantlist(plantlist_id):
         flash("Not authorized to view this page.", "danger")
         return redirect(url_for("homepage"))
 
-    # In order to get the appropriate symbols for each plant on a per plantlist basis, we get the plantlist_plants instance which houses the specific symbol for each plant on a given plantlist
+    # In order to get the appropriate symbols for each plant on a per plantlist basis,
+    # we get the plantlist_plants instance which houses the specific symbol for each
+    # plant on a given plantlist
     plantlists_plants = PlantLists_Plants.query.filter(
         PlantLists_Plants.plantlist_id == plantlist_id
     ).all()
@@ -912,6 +930,8 @@ def plantlist_remove_plant(plantlist_id, plant_id):
 @check_authorized
 def add_symbol(plantlist_id, plant_id):
     """Creates symbol and add connection to a plant on plantlist page"""
+
+    print("REQUEST", request.json)
     plantlists_plants = PlantLists_Plants.query.filter(
         PlantLists_Plants.plantlist_id == plantlist_id,
         PlantLists_Plants.plant_id == plant_id,
@@ -1040,8 +1060,11 @@ def plant_profile(plant_slug):
 @app.route("/query/<primary_type>/<int:primary_id>/<secondary_type>", methods=["GET"])
 @check_authorized
 def query_connections(primary_type, primary_id, secondary_type):
-    """Returns JSON of connections based on request types and primary ID. Used for dynamically populating connection lists and form options via Axios requests."""
+    """Returns JSON of connections based on request types and primary ID. Used for 
+    dynamically populating connection lists and form options via Axios requests."""
 
+    # Gets options to be placed in HTML select form. Only returns
+    # options that are not currently connected to primary type
     def get_options(primary):
         return [
             (getattr(item, "id"), getattr(item, "name"))
@@ -1049,6 +1072,8 @@ def query_connections(primary_type, primary_id, secondary_type):
             if item not in getattr(primary, secondary_type)
         ]
 
+    # Gets list items to be placed in HTML connected list. Only returns
+    # items that are  currently connected to primary type
     def get_list(primary):
         return [
             (getattr(item, "id"), getattr(item, "name"))
@@ -1076,7 +1101,8 @@ def query_connections(primary_type, primary_id, secondary_type):
 @app.route("/query/plantlist/<int:plantlist_id>", methods=["GET"])
 @check_authorized
 def query_plantlist(plantlist_id):
-    """Returns plants from a plant list and a plant - symbol map. Currently used for generating plant - symbol lists for plot design."""
+    """Returns plants from a plant list and a plant - symbol map. Currently used 
+    for generating plant - symbol lists for plot design."""
     plantlist = PlantList.query.get_or_404(plantlist_id)
     plantlist_plants = PlantLists_Plants.query.filter(
         PlantLists_Plants.plantlist_id == plantlist_id
@@ -1100,7 +1126,8 @@ def query_plantlist(plantlist_id):
 @app.route("/query/plot_cells/<int:plot_id>", methods=["GET"])
 @check_authorized
 def query_plot_cells(plot_id):
-    """Returns a specific plot's plot cell - symbol map. Currently used for populating the correct symbol for each cell of a plot."""
+    """Returns a specific plot's plot cell - symbol map. Currently used for 
+    populating the correct symbol for each cell of a plot."""
     plot_cells_symbols = Plot_Cells_Symbols.query.filter(
         Plot_Cells_Symbols.plot_id == plot_id
     ).all()
@@ -1142,7 +1169,8 @@ def search_plants():
             payload["q"] = search_term
             request_string = f"{API_BASE_URL}/plants/search"
 
-        # Otherwise use /plants endpoint, which should only return main_species of plants, not subspecies/varieties
+        # Otherwise use /plants endpoint, which should only return main_species of
+        # plants, not subspecies/varieties
         else:
             request_string = f"{API_BASE_URL}/plants"
 
@@ -1174,7 +1202,8 @@ def search_plants():
         if "evergreen" in form_data:
             payload["filter[leaf_retention]"] = "true"
 
-        # Create a request string "manually", as requests built in feature was replacing characters and resulting in an error from API
+        # Create a request string "manually", as requests built in feature was replacing
+        # characters and resulting in an error from API
         payload_str = "&".join("%s=%s" % (k, v) for k, v in payload.items())
         plants = requests.get(request_string, params=payload_str)
 
@@ -1189,7 +1218,8 @@ def search_plants():
 
 @app.route("/api/plants/pagination", methods=["POST"])
 def plant_pagination():
-    """Allows for navigation through Trefle's Pagination routes. Takes in the pagination link and adds API Key"""
+    """Allows for navigation through Trefle's Pagination routes. Takes in the 
+    agination link and adds API Key"""
 
     pagination_link = request.json["pagination_link"][7:]
     auth_pagination_link = pagination_link + f"&token={TREFLE_API_KEY}"
@@ -1203,6 +1233,9 @@ def plant_pagination():
     return jsonify(plantlist, links)
 
 
+logging.debug("End of app.py")
+
+
 ##############################################################################
 # Turn off all caching in Flask
 #   (useful for dev; in production, this kind of stuff is typically
@@ -1211,12 +1244,12 @@ def plant_pagination():
 # https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
 
 
-@app.after_request
-def add_header(req):
-    """Add non-caching headers on every request."""
+# @app.after_request
+# def add_header(req):
+#     """Add non-caching headers on every request."""
 
-    req.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    req.headers["Pragma"] = "no-cache"
-    req.headers["Expires"] = "0"
-    req.headers["Cache-Control"] = "public, max-age=0"
-    return req
+#     req.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+#     req.headers["Pragma"] = "no-cache"
+#     req.headers["Expires"] = "0"
+#     req.headers["Cache-Control"] = "public, max-age=0"
+#     return req
