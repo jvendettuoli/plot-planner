@@ -2,9 +2,9 @@
 #home-jumbo {
 	background-image: url(https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2734&q=80);
 
-	background-size: cover;
+	/* background-size: cover; */
 	background-attachment: fixed;
-	background-position: 0px -200px;
+	background-position: 0px -1300px;
 }
 #home-jumbo a:not(.btn) {
 	color: rgb(113, 255, 47);
@@ -12,9 +12,9 @@
 #home-main-cont {
 	background-image: url(https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2734&q=80);
 
-	background-size: cover;
+	/* background-size: cover; */
 	background-attachment: fixed;
-	background-position: 0px -200px;
+	background-position: 0px -1300px;
 	height: 100vh;
 }
 #home-cards .card {
