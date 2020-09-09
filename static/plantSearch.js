@@ -17,10 +17,10 @@ HTML to show plants
 class Search {
 	constructor() {
 		//Change out based on deployment
-		this.baseURL = 'http://127.0.0.1:5000';
+		this.baseURL = 'https://plot-planner.herokuapp.com';
 	}
 	//Change out based on deployment
-	static baseUrl = 'http://127.0.0.1:5000';
+	static baseUrl = 'https://plot-planner.herokuapp.com';
 	static defaultPlantImg = '/static/images/default-plant-pic.png';
 
 	static async extractPlantData(item) {

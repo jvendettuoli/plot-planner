@@ -4,10 +4,10 @@
 class Query {
 	constructor() {
 		//Change out based on deployment
-		this.baseURL = 'http://127.0.0.1:5000';
+		this.baseURL = 'https://plot-planner.herokuapp.com';
 	}
 	//Change out based on deployment
-	static baseUrl = 'http://127.0.0.1:5000';
+	static baseUrl = 'https://plot-planner.herokuapp.com';
 
 	//GET request to get connections based on a primaryId and secondary type
 	static async getConnections(primaryType, primaryId, secondaryType) {

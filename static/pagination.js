@@ -13,10 +13,10 @@ $('.page-link').click(handlePagination);
 class Pagination {
 	constructor() {
 		//Change out based on deployment
-		this.baseURL = 'http://127.0.0.1:5000';
+		this.baseURL = 'https://plot-planner.herokuapp.com';
 	}
 	//Change out based on deployment
-	static baseUrl = 'http://127.0.0.1:5000';
+	static baseUrl = 'https://plot-planner.herokuapp.com';
 
 	//POST request to provide the pagination link
 	static async postLink(paginationLink) {

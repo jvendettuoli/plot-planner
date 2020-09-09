@@ -7,10 +7,10 @@ actual use of instances.
 class Connection {
 	constructor() {
 		//Change out based on deployment
-		this.baseURL = 'http://127.0.0.1:5000';
+		this.baseURL = 'https://plot-planner.herokuapp.com';
 	}
 	//Change out based on deployment
-	static baseUrl = 'http://127.0.0.1:5000';
+	static baseUrl = 'https://plot-planner.herokuapp.com';
 
 	//POST request to remove plot from project
 	static async projectRemovePlot(projectId, plotId) {
