@@ -57,7 +57,7 @@ from models import (
 
 logging.debug("models imported")
 
-from secret import TREFLE_API_KEY, FLASK_SECRET
+# from secret import TREFLE_API_KEY, FLASK_SECRET
 
 logging.debug("secrets imported")
 
@@ -73,8 +73,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = False
-app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = True
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", FLASK_SECRET)
+app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "defaultsecret")
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
@@ -86,6 +86,7 @@ logging.debug("Tables created")
 
 # Trefle API base url
 API_BASE_URL = "https://trefle.io/api/v1"
+TREFLE_API_KEY = os.environ.get("TREFLE_API_KEY")
 CURR_USER_KEY = "curr_user"
 
 
