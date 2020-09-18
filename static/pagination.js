@@ -11,16 +11,11 @@ $('.page-link').click(handlePagination);
 
 //Handles requests to server database query endpoints
 class Pagination {
-	constructor() {
-		//Change out based on deployment
-		this.baseURL = 'https://plot-planner.herokuapp.com';
-	}
-	//Change out based on deployment
-	static baseUrl = 'https://plot-planner.herokuapp.com';
+	constructor() {}
 
 	//POST request to provide the pagination link
 	static async postLink(paginationLink) {
-		const res = await axios.post(`${this.baseUrl}/api/plants/pagination`, { pagination_link: paginationLink });
+		const res = await axios.post(`/api/plants/pagination`, { pagination_link: paginationLink });
 
 		let plantList = [];
 		for (let item of res.data[0]) {

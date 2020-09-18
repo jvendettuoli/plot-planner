@@ -15,12 +15,8 @@ extracting applicable data for the table display, and generating
 HTML to show plants
 */
 class Search {
-	constructor() {
-		//Change out based on deployment
-		this.baseURL = 'https://plot-planner.herokuapp.com';
-	}
-	//Change out based on deployment
-	static baseUrl = 'https://plot-planner.herokuapp.com';
+	constructor() {}
+
 	static defaultPlantImg = '/static/images/default-plant-pic.png';
 
 	static async extractPlantData(item) {
@@ -38,7 +34,7 @@ class Search {
 
 	//GET request to plant_list view and calls for populating the data
 	static async fetchAllPlants() {
-		const res = await axios.get(`${this.baseUrl}/plants`);
+		const res = await axios.get(`/plants`);
 		let plantList = [];
 		for (let item of res.data) {
 			plantList.push(await this.extractPlantData(item));
@@ -91,7 +87,7 @@ class Search {
 	// POST request to return all plants based on search & filter terms
 	// Also calls to display data and updates pagination links
 	static async searchPlants(searchTerms) {
-		const res = await axios.post(`${this.baseUrl}/api/plants/search`, searchTerms);
+		const res = await axios.post(`/api/plants/search`, searchTerms);
 
 		let plantList = [];
 		for (let item of res.data[0]) {

@@ -970,12 +970,15 @@ def plants_search_table():
     payload = {
         "token": TREFLE_API_KEY,
     }
-
-    plants = requests.get(f"{API_BASE_URL}/plants", params=payload)
-    # Build list of plants to be generated into a plant table on frontend
-    plantlist = [plant for plant in plants.json()["data"]]
-    # Trefle returns links to the next set of plants in a search. We use this for pagination
-    links = plants.json()["links"]
+    try:
+        plants = requests.get(f"{API_BASE_URL}/plants", params=payload)
+        # Build list of plants to be generated into a plant table on frontend
+        print("###################", plants)
+        plantlist = [plant for plant in plants.json()["data"]]
+        # Trefle returns links to the next set of plants in a search. We use this for pagination
+        links = plants.json()["links"]
+    except KeyError:
+        logging.warning("Error getting plant data from Trefle API")
 
     return render_template(
         "plants/search_table.html", form=form, plantlist=plantlist, links=links

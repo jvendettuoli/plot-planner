@@ -38,8 +38,9 @@ There are a great many of improvements planned for the site, including from qual
 ## Installation
 If you would like to work on a personal version of Plot Planner, it is fairly simple to get up and running in your environment.
 
-Change the current working directory to the location where you want the cloned directory. Enter the following:
+For any of the Trefle API calls to work, you'll need your own API key from Trefle. You can find how to get one [here](https://docs.trefle.io/docs/guides/getting-started). Once you have a key you'll need to create an environment variable with the key `TREFLE_API_KEY` and value of your key.
 
+Change the current working directory to the location where you want the cloned directory. Enter the following:
 
     $ git clone https://github.com/jvendettuoli/plot-planner.git
 

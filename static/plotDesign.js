@@ -7,7 +7,7 @@ const $plotCols = $('.plot-col');
 const $plotRows = $('.plot-row');
 const $selectAllBtn = $('#select-all-btn');
 const $deselectAllBtn = $('#deselect-all-btn');
-const $clearSelectedBtn = $('#clear-selected-btn');
+const $removeSelectedBtn = $('#remove-selected-btn');
 const $rowSelects = $('.select-row');
 const $colSelects = $('.select-col');
 const $plantlistSelect = $('#plantlist-select');
@@ -40,19 +40,24 @@ $plantlistSelect.on('change', handlePlantlistSelect);
 
 $deselectAllBtn.on('click', handleDeselectAll);
 $selectAllBtn.on('click', handleSelectAll);
-$clearSelectedBtn.on('click', handleClearSelected);
+$removeSelectedBtn.on('click', handleRemoveSelected);
 
 // Handler for click on any of the row select cells
 $plotContainer.on('click', '.select-row', handleSelectRow);
 // Handler for click on any of the column select cells
 $plotContainer.on('click', '.select-col', handleSelectCol);
 // On click of any plot cell this toggles selected class
-$plotContainer.on('click', '.plot-col', function(evt) {
-	$(evt.currentTarget).toggleClass('selected');
-});
+$plotContainer.on('click', '.plot-col:not(.plot-viewer)', handleSelectCell);
 // On click of any symbol on the plant-symbol table applies that
 // symbol to selected cells
 $plantSymbolTableBody.on('click', '.symbol', handleSymbolSelect);
+
+function handleSelectCell(evt) {
+	const $cell = $(evt.currentTarget);
+	const $viewerCell = $(`.plot-viewer[data-col=${$cell.attr('data-col')}][data-row=${$cell.attr('data-row')}]`);
+	$cell.toggleClass('selected');
+	$viewerCell.toggleClass('selected');
+}
 
 // gets plants - symbols and populates plant - symbol table
 async function handlePlantlistSelect(evt) {
@@ -99,7 +104,7 @@ function handleSelectAll(evt) {
 
 // On call removes symbols from any selected cells
 // also removes connection in database
-async function handleClearSelected(evt) {
+async function handleRemoveSelected(evt) {
 	for (const cell of $plotCols.filter('.selected')) {
 		const $cell = $(cell);
 		if ($cell.html().includes('symbol')) {
@@ -114,11 +119,15 @@ async function handleClearSelected(evt) {
 // Selects a full row of cells
 function handleSelectRow(evt) {
 	const $selectRow = $(evt.currentTarget);
+	const row = $selectRow.siblings('div').attr('data-row');
+	const $viewerRow = $(`.plot-viewer[data-row=${row}]`);
 	if ($selectRow.hasClass('add')) {
 		$selectRow.siblings('div').addClass('selected');
+		$viewerRow.addClass('selected');
 	}
 	else {
 		$selectRow.siblings('div').removeClass('selected');
+		$viewerRow.removeClass('selected');
 	}
 	$selectRow.toggleClass('add');
 	$selectRow.toggleClass('remove');
@@ -154,14 +163,15 @@ function handleSymbolSelect(evt) {
 		const cellY = $cell.attr('data-row');
 		Connection.plotCellAddSymbol(plotId, cellX, cellY, plantlistsPlantsId);
 	}
+	drawPlotSymbols();
 }
 
 // Gets the symbols for each plot cell and displays them.
 async function drawPlotSymbols() {
 	const plotSymbols = await Query.getPlotCellSymbols(plotId);
-	plotSymbols.forEach((ele) => {
-		const $cell = $(`[data-col=${ele.cell_x}][data-row=${ele.cell_y}]`);
-		$cell.html(ele.symbol);
+	plotSymbols.forEach((el) => {
+		const $cell = $(`[data-col=${el.cell_x}][data-row=${el.cell_y}]`);
+		$cell.html(el.symbol);
 	});
 }
 

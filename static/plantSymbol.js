@@ -11,16 +11,11 @@ let $customSymbolCont;
 
 // Symbo Class
 class Symbol {
-	constructor() {
-		//Change out based on deployment
-		this.baseURL = 'https://plot-planner.herokuapp.com';
-	}
-	//Change out based on deployment
-	static baseUrl = 'https://plot-planner.herokuapp.com';
+	constructor() {}
 
 	//POST request to add symbol to plant of a given plantlist
 	static async addSymbol(symbol, plantlistId, plantId) {
-		const res = await axios.post(`${this.baseUrl}/plantlists/${plantlistId}/plant/${plantId}/symbol/add`, {
+		const res = await axios.post(`/plantlists/${plantlistId}/plant/${plantId}/symbol/add`, {
 			symbol
 		});
 	}
