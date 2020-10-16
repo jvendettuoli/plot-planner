@@ -1,13 +1,13 @@
 # Plot Planner
-Plot Planner is a web app that provides users the ability search through over 1 million plants sourced from [Trefle API](https://trefle.io/) and save those plants to customizable projets, wherein users can plot out their next planting project.
+Plot Planner is a web app that provides users the ability search through over 1 million plants sourced from [Trefle API](https://trefle.io/) and save those plants to customizable projects, wherein users can plot out their next planting project.
 
-## Depolyment
-Plot Planner is depolyed on Heroku and is available at https://plot-planner.herokuapp.com/.
+## Deployment
+Plot Planner is deployed on Heroku and is available at https://plot-planner.herokuapp.com/.
 
 ## Features
 Users can search through plants based on a variety of filters and view plant specific details including taxonomy, images, distribution, growth specifications, and more. The Trefle database is still in beta so the information is constantly improving.
 
-If users signup, they can also create and save Projects, Plots, and Plant Lists to aid in their next planting endevour. 
+If users signup, they can also create and save Projects, Plots, and Plant Lists to aid in their next planting endeavour. 
 
 Plant Lists allow users to save plants they find to specific lists, and apply a custom symbol to that plant for use in plot design. 
 
@@ -15,12 +15,12 @@ Plots are a basic grid format (similar to a raised planting bed), and allow user
 
 Projects allow users a higher level of organization for their planning needs. 
 
-Each component can be connected to each other, or used independantly. 
+Each component can be connected to each other, or used independently. 
 
 ### Future Goals
 In the future, we will be adding in additional APIs that focus on providing a more robust source of information on growth requirements for plants. This information will then be used to create custom reports for users to aid in their planting projects.
 
-There are a great many of improvements planned for the site, including quality of life features such as sortable tables, improved symbols for plants, sharing and collaboration on projects components, and more.
+There are a great many improvements planned for the site, including quality of life features such as sortable tables, improved symbols for plants, sharing and collaboration on project components, and more.
 
 ## Tech Stack
 ### Back-end:
@@ -38,7 +38,7 @@ There are a great many of improvements planned for the site, including quality o
 ## Installation
 If you would like to work on a personal version of Plot Planner, it is fairly simple to get up and running in your environment.
 
-For any of the Trefle API calls to work, you'll need your own API key from Trefle. You can find how to get one [here](https://docs.trefle.io/docs/guides/getting-started). Once you have a key you'll need to create an environment variable with the key `TREFLE_API_KEY` and value of your key.
+For any of the Trefle API calls to work, you'll need your own API key from Trefle. You can find how to get one [here](https://docs.trefle.io/docs/guides/getting-started). Once you have a key you'll need to create an environment variable with the key `TREFLE_API_KEY` and value of your personal key.
 
 Change the current working directory to the location where you want the cloned directory. Enter the following:
 
@@ -56,7 +56,7 @@ Then start your virtual environment.
 
     source venv venv/bin/activate
 
-Now any modules downloaded will only be present in your virtual envrionment. So let's download the requirements. The following command will install all modules from the requirements.txt file. You may need to use `pip3`.
+Now any modules downloaded will only be present in your virtual environment. So let's download the requirements. The following command will install all modules from the requirements.txt file. You may need to use `pip3`.
 
     pip install -r requirements.txt
 
