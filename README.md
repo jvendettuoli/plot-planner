@@ -20,7 +20,7 @@ Each component can be connected to each other, or used independantly.
 ### Future Goals
 In the future, we will be adding in additional APIs that focus on providing a more robust source of information on growth requirements for plants. This information will then be used to create custom reports for users to aid in their planting projects.
 
-There are a great many of improvements planned for the site, including from quality of life features such as sortable tables, improved symbols for plants, sharing and collaboration on projects components, and more.
+There are a great many of improvements planned for the site, including quality of life features such as sortable tables, improved symbols for plants, sharing and collaboration on projects components, and more.
 
 ## Tech Stack
 ### Back-end:
@@ -72,11 +72,11 @@ Your database should be set up, so now you can start your server.
 
     flask run
 
-If you would like to start Flask in development mode, which can be done by first including:
+You can start Flask in development mode, which can be done by first including:
 
     FLASK_ENV=development flask run
 
-You should see, though you'll have your own debugger PIN:
+You should see similar output to the following, though you'll have your own debugger PIN:
 
     * Environment: development
     * Debug mode: on
@@ -86,6 +86,6 @@ You should see, though you'll have your own debugger PIN:
     * Debugger PIN: ###-###-###
 
 
-By clicking on the http address you'll be brough to your functionion Plot Planner!
+By clicking on the http address you'll be brought to your functioning Plot Planner!
 
 ### Thanks for checking out V1 of Plot Planner, and let me know if you have any questions, advice, or suggestions.
