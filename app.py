@@ -212,13 +212,6 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/thumbnail")
-def thumbnail():
-    """Page to store thumbnail image. Not intended to be visited."""
-
-    return render_template("thumbnail.html")
-
-
 ########################################################################
 # User Routes
 ########################################################################
