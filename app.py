@@ -207,7 +207,7 @@ def homepage():
 
 @app.route("/about")
 def about():
-    """Show homepage"""
+    """Show about page"""
 
     return render_template("about.html")
 
