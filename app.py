@@ -57,10 +57,6 @@ from models import (
 
 logging.debug("models imported")
 
-from secret import TREFLE_API_KEY, FLASK_SECRET
-
-logging.debug("secrets imported")
-
 
 app = Flask(__name__)
 logging.debug("app = Flask")
