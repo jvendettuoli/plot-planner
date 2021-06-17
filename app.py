@@ -57,7 +57,7 @@ from models import (
 
 logging.debug("models imported")
 
-# from secret import TREFLE_API_KEY, FLASK_SECRET
+from secret import TREFLE_API_KEY, FLASK_SECRET
 
 logging.debug("secrets imported")
 
@@ -82,7 +82,7 @@ logging.debug("Database Modals connected")
 
 
 # Trefle API base url
-API_BASE_URL = "https://trefle.io/api/v1"
+API_BASE_URL = "https://api.floracodex.com/v1"
 TREFLE_API_KEY = os.environ.get("TREFLE_API_KEY")
 CURR_USER_KEY = "curr_user"
 
@@ -198,11 +198,16 @@ def logout():
 ########################################################################
 
 
-@app.route("/")
+@app.route("/homepage")
 def homepage():
     """Show homepage"""
-
     return render_template("home.html")
+
+@app.route("/")
+def service_down():
+    """Show service down page"""
+    return render_template("service_down.html")
+
 
 
 @app.route("/about")
@@ -973,16 +978,17 @@ def plants_search_table():
     try:
         plants = requests.get(f"{API_BASE_URL}/plants", params=payload)
         # Build list of plants to be generated into a plant table on frontend
-        print("###################", plants)
         plantlist = [plant for plant in plants.json()["data"]]
         # Trefle returns links to the next set of plants in a search. We use this for pagination
-        links = plants.json()["links"]
+        links = plants.json()["links"]           
+
     except KeyError:
         logging.warning("Error getting plant data from Trefle API")
 
     return render_template(
         "plants/search_table.html", form=form, plantlist=plantlist, links=links
     )
+
 
 
 @app.route("/plants/<plant_slug>", methods=["GET", "POST"])

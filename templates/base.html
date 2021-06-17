@@ -29,7 +29,7 @@
 <body class="{% block body_class %}{% endblock %}">
 
 <!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-success">
   <a class="navbar-brand" href="{{url_for('homepage')}}"><i class="fas fa-seedling mr-2"></i>Plot Planner</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -81,7 +81,7 @@
     {% endif %}
     </ul>    
   </div>
-</nav>
+</nav> -->
 
 <!-- Flash Message -->
 <div class="container">
@@ -89,13 +89,15 @@
   <div class="alert alert-{{ category }} my-3">{{ message }}</div>
   {% endfor %}
 </div>
+
+<!-- Content -->
   {% block content %}
   {% endblock %}
 
-<footer>
+<!-- <footer>
   <hr>
   <p class="text-center text-success">Plant data obtained from <a href="https://trefle.io/">trefle.io</a>, an open source global plants API.</p>
-</footer>
+</footer> -->
 
 
 </body>

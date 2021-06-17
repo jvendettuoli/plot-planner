@@ -1,3 +1,6 @@
+# TEMPORARILY DOWN
+Unfortunately, the API that this project relys upon for data, Trefle, has permantly suspended all services. Work is being down to find alternative sources of data, and refactor existing code to match new data sources. This web app will remain up, but will be largly nonfunctional until changes are finalized. 
+
 # Plot Planner
 Plot Planner is a web app that provides users the ability search through over 1 million plants sourced from [Trefle API](https://trefle.io/) and save those plants to customizable projects, wherein users can plot out their next planting project.
 
@@ -54,7 +57,7 @@ Ensure you have a virtual environment running in your working directory. A virtu
 
 Then start your virtual environment.
 
-    source venv venv/bin/activate
+    source venv/bin/activate
 
 Now any modules downloaded will only be present in your virtual environment. So let's download the requirements. The following command will install all modules from the requirements.txt file. You may need to use `pip3`.
 
