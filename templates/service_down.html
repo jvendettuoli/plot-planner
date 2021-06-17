@@ -2,11 +2,22 @@
 {% block content %}
 
 
-<div id="service-down-cont" class="container-fluid p-0">
-    <div class="row">
+<div id="service-down-cont" style="display: flex; flex-direction: column; justify-content: center; height: 100%;">
+            <div class="jumbotron jumbotron-fluid text-white" style="background-color: transparent; word-wrap: normal; hyphens: auto; margin: auto;">
+                <div class="container text-backdrop-dark text-center">
+                    <h1 class="display-4">Plot Planner will be temporarily down.</h1>
+                    <hr class="my-4" style="background-color: white;">
+                    <p class="lead font-weight-bold">The sole source of data for Plot Planner was the Trefle API, which has stated that they will be permanently offline.<br>This site will be down until a new source of data is found, and changes are made to integrate that data.<br>
+                        Sorry for the inconvenience!</p>
+                </div>
+            </div>
+    </div>
+</div>
+<!-- <div id="service-down-cont" class="container-fluid p-0" style="height: 100%">
+    <div  class="row m-0" style="height: 100%;">
         <div class="col-1"></div>
         <div class="col">
-            <div class="jumbotron jumbotron-fluid text-white" style="background-color: transparent;">
+            <div class="jumbotron jumbotron-fluid text-white" style="background-color: transparent; word-wrap: normal; hyphens: auto;">
                 <div class="container text-backdrop-dark text-center">
                     <h1 class="display-4">Plot Planner will be temporarily down.</h1>
                     <hr class="my-4" style="background-color: white;">
@@ -17,5 +28,5 @@
         </div>
         <div class="col-1"></div>
     </div>
-</div>
+</div> -->
 {% endblock %}

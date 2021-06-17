@@ -1,12 +1,17 @@
-/* Service Down */
-#service-down-cont {
-    height: 100vh;
-    width: 100vw;
-
-    background-image: url(/static/images/dead-plant.jpg);
+/* Remove when site back up */
+html,
+body {
+    min-height: 100% !important;
+    background: url(/static/images/dead-plant.jpg) no-repeat center center fixed;
 
     background-size: cover;
-    background-repeat: no-repeat;
+}
+
+/* Service Down */
+#service-down-cont {
+    background: url(/static/images/dead-plant.jpg) no-repeat center center fixed;
+
+    background-size: cover;
 }
 
 /* Home page */
